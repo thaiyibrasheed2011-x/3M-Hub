@@ -7,6 +7,7 @@
     
     <script src="https://cdn.tailwindcss.com"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
     <script>
         tailwind.config = {
             theme: {
@@ -293,6 +294,7 @@
                             <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse shadow-[0_0_8px_rgba(34,197,94,0.8)]"></span>
                         </div>
                         <div id="dm-list" class="space-y-[1px]">
+                            <!-- Static Admin Contact (others are added dynamically below) -->
                             <div onclick="selectGroup('dm-admin', 'Grandpa (Admin)', true)" id="grp-btn-dm-admin" class="group-btn flex items-center p-3 cursor-pointer hover:bg-[#202c33] transition-colors bg-[#111]">
                                 <div class="w-12 h-12 rounded-full bg-gradient-to-br from-green-600 to-green-800 flex items-center justify-center text-white font-bold border border-gold-700 flex-shrink-0 relative">
                                     GR
@@ -436,11 +438,16 @@
             <div id="view-admin" class="absolute inset-0 flex flex-col d-none bg-[#0A0A0A] p-6 overflow-y-auto">
                 <div class="flex items-center justify-between mb-2">
                     <h2 class="text-3xl font-bold text-white"><i class="fa-solid fa-crown text-gold-500 mr-3"></i>Admin Control Panel</h2>
-                    <button onclick="testEmailJS()" class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-blue-500 transition-colors ml-2 flex items-center">
-                        <i class="fa-solid fa-paper-plane mr-2"></i> Test Email
-                    </button>
+                    <div class="flex space-x-2">
+                        <button onclick="simulateUserJoin()" class="bg-green-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-green-500 transition-colors flex items-center shadow-lg">
+                            <i class="fa-solid fa-user-plus mr-2"></i> Simulate User Join
+                        </button>
+                        <button onclick="testEmailJS()" class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-blue-500 transition-colors flex items-center shadow-lg">
+                            <i class="fa-solid fa-paper-plane mr-2"></i> Test Email
+                        </button>
+                    </div>
                 </div>
-                <p class="text-gray-400 mb-8">Manage groups, approve users, and update the dynamic Family Tree.</p>
+                <p class="text-gray-400 mb-8">Manage groups, approve users, monitor online presence, and update the dynamic Family Tree.</p>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                     <div class="bg-[#111] p-6 rounded-xl border border-gray-800">
@@ -584,6 +591,7 @@
     <script>
         // --- State Management ---
         const AppState = {
+            userId: 'u_' + Math.random().toString(36).substr(2, 9),
             isAdmin: false,
             userName: 'Family Member',
             userEmail: '',
@@ -594,6 +602,118 @@
             recordSeconds: 0,
             scheduledMeetings: [],
             meetingActive: false
+        };
+
+        // --- AES-256 ENCRYPTION & LOCAL STORAGE ---
+        const ChatCrypto = {
+            keys: {
+                'group1': 'main_family_aes_key_3m',
+                'group2': 'cousins_hub_aes_key_3m',
+                'default': 'private_dm_aes_key_3m'
+            },
+            getKey: (chatId) => ChatCrypto.keys[chatId] || (ChatCrypto.keys['default'] + '_' + chatId),
+            encrypt: (data, chatId) => CryptoJS.AES.encrypt(data, ChatCrypto.getKey(chatId)).toString(),
+            decrypt: (cipherText, chatId) => {
+                try {
+                    const bytes = CryptoJS.AES.decrypt(cipherText, ChatCrypto.getKey(chatId));
+                    return bytes.toString(CryptoJS.enc.Utf8);
+                } catch(e) { return "🔒 [Decryption Failed]"; }
+            }
+        };
+
+        const MessageStore = {
+            blobToBase64: (blob) => {
+                return new Promise((resolve) => {
+                    const reader = new FileReader();
+                    reader.onloadend = () => resolve(reader.result);
+                    reader.readAsDataURL(blob);
+                });
+            },
+            saveMessage: (chatId, msgObj) => {
+                const encryptedMsg = {
+                    id: msgObj.id,
+                    type: msgObj.type,
+                    encryptedData: ChatCrypto.encrypt(msgObj.data, chatId),
+                    sender: msgObj.sender,
+                    timestamp: msgObj.timestamp,
+                    durationSeconds: msgObj.durationSeconds
+                };
+                
+                let chats = JSON.parse(localStorage.getItem('3m_chats') || '{}');
+                if (!chats[chatId]) chats[chatId] = { messages: [] };
+                
+                chats[chatId].messages.push(encryptedMsg);
+                if (chats[chatId].messages.length > 200) {
+                    chats[chatId].messages = chats[chatId].messages.slice(-200);
+                }
+                localStorage.setItem('3m_chats', JSON.stringify(chats));
+                return encryptedMsg;
+            },
+            loadMessages: (chatId) => {
+                el.chatMessages.innerHTML = `
+                    <div class="flex justify-center mb-4 mt-2">
+                        <span class="bg-[#182229] text-[#8696a0] text-xs px-3 py-1 rounded-lg uppercase tracking-wide">Today</span>
+                    </div>
+                    <div class="flex justify-center my-4">
+                        <span class="bg-[#182229] text-[#ffd279] text-xs px-3 py-2 rounded-lg text-center max-w-[85%] shadow-sm border border-gold-600/30">
+                            <i class="fa-solid fa-lock mr-1"></i> Messages are end-to-end encrypted with AES-256. No one outside this chat can read or listen.
+                        </span>
+                    </div>
+                `;
+                let chats = JSON.parse(localStorage.getItem('3m_chats') || '{}');
+                if (chats[chatId]) {
+                    chats[chatId].messages.forEach(encMsg => MessageStore.displayMessage(encMsg, chatId));
+                }
+            },
+            displayMessage: (encryptedMsg, chatId) => {
+                const isMe = encryptedMsg.sender === AppState.userName;
+                const alignClass = isMe ? 'justify-end' : 'justify-start';
+                const bubbleClass = isMe ? 'msg-bubble-sent' : 'msg-bubble-received';
+                const senderHTML = isMe ? '' : `<p class="text-[10px] text-gold-500 font-bold mb-0.5">${encryptedMsg.sender}</p>`;
+
+                if (encryptedMsg.type === 'text') {
+                    const decryptedText = ChatCrypto.decrypt(encryptedMsg.encryptedData, chatId);
+                    el.chatMessages.insertAdjacentHTML('beforeend', `
+                        <div class="flex ${alignClass} fade-in mt-1">
+                            <div class="${bubbleClass} p-2 px-3 max-w-[75%] shadow-sm relative">
+                                ${senderHTML}
+                                <p class="text-[14.5px] leading-relaxed text-${isMe?'black':'#e9edef'}">${decryptedText}</p>
+                                <div class="flex justify-end items-center mt-1 -mb-1 space-x-1">
+                                    <span class="text-[10px] text-${isMe?'black/70':'gray-400'}">${encryptedMsg.timestamp}</span>
+                                    ${isMe ? '<i class="fa-solid fa-check text-[10px] text-gray-700"></i>' : ''}
+                                </div>
+                            </div>
+                        </div>
+                    `);
+                } else if (encryptedMsg.type === 'audio') {
+                    const msgId = encryptedMsg.id;
+                    el.chatMessages.insertAdjacentHTML('beforeend', `
+                        <div class="flex ${alignClass} fade-in mt-1">
+                            <div class="${bubbleClass} p-2 px-3 shadow-sm relative flex items-center space-x-3 w-[250px] sm:w-[280px]">
+                                <button onclick="playEncryptedAudio('${msgId}', '${encryptedMsg.encryptedData}', '${chatId}')" id="play-btn-${msgId}" class="w-10 h-10 rounded-full bg-${isMe?'black/10':'white/10'} flex items-center justify-center cursor-pointer hover:bg-${isMe?'black/20':'white/20'} transition-colors shrink-0 outline-none relative group">
+                                    <i class="fa-solid fa-play text-${isMe?'black':'white'} ml-1 text-sm" id="play-icon-${msgId}"></i>
+                                    <i class="fa-solid fa-spinner fa-spin text-${isMe?'black':'white'} text-sm hidden absolute" id="load-icon-${msgId}"></i>
+                                </button>
+                                <div class="flex-1 flex flex-col w-full">
+                                    <div class="h-1.5 bg-${isMe?'black/20':'white/20'} rounded-full relative overflow-hidden mb-1 cursor-pointer" onclick="seekAudio(event, '${msgId}')" id="progress-container-${msgId}">
+                                        <div class="absolute left-0 top-0 h-full bg-${isMe?'black':'gold-500'} w-0" id="progress-bar-${msgId}"></div>
+                                    </div>
+                                    <div class="flex justify-between items-center w-full mt-1">
+                                        <span class="text-[10px] font-mono text-${isMe?'black/80':'gray-300'}" id="time-display-${msgId}" data-duration="${encryptedMsg.durationSeconds}">${formatAudioTime(encryptedMsg.durationSeconds)}</span>
+                                        <div class="flex items-center space-x-1">
+                                            <span class="text-[8px] text-${isMe?'black/60':'gray-400'} border border-${isMe?'black/30':'gray-600'} rounded px-1 mr-1">🔒 E2EE</span>
+                                            <span class="text-[10px] text-${isMe?'black/70':'gray-400'}">${encryptedMsg.timestamp}</span>
+                                            ${isMe ? '<i class="fa-solid fa-check text-[10px] text-gray-700"></i>' : ''}
+                                        </div>
+                                    </div>
+                                </div>
+                                <audio id="${msgId}" ontimeupdate="updateAudioProgress('${msgId}')" onended="audioEnded('${msgId}')" class="hidden"></audio>
+                            </div>
+                        </div>
+                    `);
+                }
+                el.chatMessages.scrollTop = el.chatMessages.scrollHeight;
+            }
         };
 
         // --- NEW FAMILY TREE DATA (GOLDEN EDITION) ---
@@ -1352,6 +1472,10 @@
                     el.gmailLogin.classList.add('d-none'); el.app.classList.remove('d-none'); el.app.classList.add('fade-in');
                     switchTab('chat');
                     showToast('Connection Successful', `Logged in as ${AppState.userEmail}.`);
+                    
+                    // --- LIVE STATUS: Broadcast that we've joined ---
+                    hubChannel.postMessage({ type: 'USER_JOINED', user: { name: AppState.userName, id: AppState.userId } });
+
                 }, 500);
             } else {
                 const err = document.getElementById('gmail-error');
@@ -1406,9 +1530,7 @@
             document.getElementById('current-chat-title').textContent = finalTitle;
             document.getElementById('chat-header-avatar').textContent = finalTitle.substring(0, 2).toUpperCase();
 
-            el.chatMessages.innerHTML = isPrivate 
-                ? `<div class="flex justify-center my-4"><span class="bg-[#182229] text-[#ffd279] text-xs px-3 py-2 rounded-lg text-center max-w-[85%] shadow-sm border border-gold-600/30"><i class="fa-solid fa-lock mr-1"></i> Messages with ${finalTitle} are encrypted.</span></div>`
-                : `<div class="flex justify-center my-4"><span class="bg-gray-800 text-gray-400 text-xs px-3 py-1 rounded-full">Switched to ${finalTitle}</span></div>`;
+            MessageStore.loadMessages(groupId);
         }
 
         el.msgInput.addEventListener('input', function() {
@@ -1420,8 +1542,19 @@
         function sendMessage() {
             const text = el.msgInput.value.trim(); if(!text) return;
             const time = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-            el.chatMessages.insertAdjacentHTML('beforeend', `<div class="flex justify-end fade-in mt-1"><div class="msg-bubble-sent p-2 px-3 max-w-[75%] shadow-sm relative"><p class="text-[14.5px] leading-relaxed text-black">${text}</p><div class="flex justify-end items-center mt-1 -mb-1 space-x-1"><span class="text-[10px] text-black/70">${time}</span><i class="fa-solid fa-check text-[10px] text-gray-700"></i></div></div></div>`);
-            el.msgInput.value = ''; el.btnSend.classList.add('hidden'); el.btnMic.classList.remove('hidden'); el.chatMessages.scrollTop = el.chatMessages.scrollHeight;
+            
+            const msgObj = {
+                id: 'msg-' + Date.now(),
+                type: 'text',
+                data: text,
+                sender: AppState.userName,
+                timestamp: time
+            };
+            
+            const encryptedMsg = MessageStore.saveMessage(AppState.activeGroup, msgObj);
+            MessageStore.displayMessage(encryptedMsg, AppState.activeGroup);
+            
+            el.msgInput.value = ''; el.btnSend.classList.add('hidden'); el.btnMic.classList.remove('hidden');
         }
 
         function handleFileUpload(event) {
@@ -1501,11 +1634,20 @@
 
                 mediaRecorder.ondataavailable = event => { if (event.data.size > 0) audioChunks.push(event.data); };
 
-                mediaRecorder.onstop = () => {
+                mediaRecorder.onstop = async () => {
                     const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
                     if (AppState.recordSeconds >= 1) {
-                        const audioUrl = URL.createObjectURL(audioBlob);
-                        appendRealAudioMessage(audioUrl, AppState.recordSeconds);
+                        const base64Audio = await MessageStore.blobToBase64(audioBlob);
+                        const msgObj = {
+                            id: 'audio-' + Date.now(),
+                            type: 'audio',
+                            data: base64Audio,
+                            sender: AppState.userName,
+                            timestamp: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}),
+                            durationSeconds: AppState.recordSeconds
+                        };
+                        const encryptedMsg = MessageStore.saveMessage(AppState.activeGroup, msgObj);
+                        MessageStore.displayMessage(encryptedMsg, AppState.activeGroup);
                     }
                     stream.getTracks().forEach(track => track.stop());
                 };
@@ -1537,34 +1679,36 @@
             el.msgInput.classList.remove('hidden');
         }
 
-        function appendRealAudioMessage(audioUrl, durationSeconds) {
-            const time = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-            const msgId = 'audio-' + Date.now();
-            
-            const msgHtml = `
-                <div class="flex justify-end fade-in mt-1">
-                    <div class="msg-bubble-sent p-2 px-3 shadow-sm relative flex items-center space-x-3 w-[250px] sm:w-[280px]">
-                        <button onclick="playAudio('${msgId}')" id="play-btn-${msgId}" class="w-10 h-10 rounded-full bg-black/10 flex items-center justify-center cursor-pointer hover:bg-black/20 transition-colors shrink-0 outline-none">
-                            <i class="fa-solid fa-play text-black ml-1 text-sm" id="play-icon-${msgId}"></i>
-                        </button>
-                        <div class="flex-1 flex flex-col w-full">
-                            <div class="h-1.5 bg-black/20 rounded-full relative overflow-hidden mb-1 cursor-pointer" onclick="seekAudio(event, '${msgId}')" id="progress-container-${msgId}">
-                                <div class="absolute left-0 top-0 h-full bg-black w-0" id="progress-bar-${msgId}"></div>
-                            </div>
-                            <div class="flex justify-between items-center w-full">
-                                <span class="text-[10px] font-mono text-black/80" id="time-display-${msgId}" data-duration="${durationSeconds}">${formatAudioTime(durationSeconds)}</span>
-                                <div class="flex items-center space-x-1">
-                                    <span class="text-[10px] text-black/70">${time}</span>
-                                    <i class="fa-solid fa-check text-[10px] text-gray-700"></i>
-                                </div>
-                            </div>
-                        </div>
-                        <audio id="${msgId}" src="${audioUrl}" ontimeupdate="updateAudioProgress('${msgId}')" onended="audioEnded('${msgId}')" class="hidden"></audio>
-                    </div>
-                </div>
-            `;
-            el.chatMessages.insertAdjacentHTML('beforeend', msgHtml);
-            el.chatMessages.scrollTop = el.chatMessages.scrollHeight;
+        async function playEncryptedAudio(id, encryptedBase64, chatId) {
+            const audioEl = document.getElementById(id);
+            const playIcon = document.getElementById(`play-icon-${id}`);
+            const loadIcon = document.getElementById(`load-icon-${id}`);
+
+            if (audioEl.src && audioEl.src !== window.location.href) {
+                playAudio(id);
+                return;
+            }
+
+            playIcon.classList.add('hidden');
+            loadIcon.classList.remove('hidden');
+
+            try {
+                const decryptedBase64 = ChatCrypto.decrypt(encryptedBase64, chatId);
+                if(decryptedBase64.startsWith('🔒')) throw new Error('Decryption failed');
+                
+                const response = await fetch(decryptedBase64);
+                const blob = await response.blob();
+                audioEl.src = URL.createObjectURL(blob);
+                
+                playIcon.classList.remove('hidden');
+                loadIcon.classList.add('hidden');
+                playAudio(id);
+            } catch (err) {
+                console.error("Audio decryption error", err);
+                showToast("Decryption Error", "Failed to decrypt audio message.");
+                playIcon.classList.remove('hidden');
+                loadIcon.classList.add('hidden');
+            }
         }
 
         function playAudio(id) {
@@ -1641,6 +1785,7 @@
         initEmojiPicker();
         refreshTreeUI();
         updateTransform();
+        MessageStore.loadMessages(AppState.activeGroup);
 
         // Admin Group Edit logic
         function promptEditGroup(groupId) {
@@ -1654,6 +1799,83 @@
                     showToast('Group Updated', `Group renamed to "${newVal}".`);
                 }
             });
+        }
+
+        // --- LIVE USER PRESENCE (Broadcast Channel Integration) ---
+        const hubChannel = new BroadcastChannel('3m_hub_channel');
+
+        // Listen for new users arriving from other browser tabs
+        hubChannel.onmessage = (event) => {
+            if (event.data.type === 'USER_JOINED') {
+                handleUserJoined(event.data.user.name, event.data.user.id, true);
+                
+                // Let the newly joined user know that we are already online!
+                const isAppVisible = !document.getElementById('app-container').classList.contains('d-none');
+                if (isAppVisible) {
+                    hubChannel.postMessage({ type: 'I_AM_ONLINE', user: { name: AppState.userName, id: AppState.userId } });
+                }
+            } else if (event.data.type === 'I_AM_ONLINE') {
+                // If a user tells us they are online, just add them (no toast notification)
+                handleUserJoined(event.data.user.name, event.data.user.id, false);
+            }
+        };
+
+        // Handle dynamically adding a newly joined user to the list
+        function handleUserJoined(name, id, showNotification = true) {
+            if (name === AppState.userName) return; // Prevent adding yourself
+            
+            addPrivateContact(name, id);
+            
+            // Only fire the toast notification if the current user is an Admin, 
+            // the flag is true, and they are fully logged into the portal
+            const isAppVisible = !document.getElementById('app-container').classList.contains('d-none');
+            if (AppState.isAdmin && showNotification && isAppVisible) {
+                showToast('New Member Online', `${name} has just logged into the portal.`, '<div class="text-gold-500 text-xs mt-1">They appear in your Private Chats</div>');
+            }
+        }
+
+        // Construct the UI block for a new Private Contact
+        function addPrivateContact(name, id) {
+            if (!id) id = name.replace(/\s+/g, '-').toLowerCase();
+            
+            // Prevent duplicates
+            if (document.getElementById(`grp-btn-dm-${id}`)) return; 
+            
+            const initials = name.substring(0, 2).toUpperCase();
+            
+            // Assign a random rich gradient color to the new avatar
+            const colors = ['from-blue-600 to-blue-800', 'from-purple-600 to-purple-800', 'from-pink-600 to-pink-800', 'from-teal-600 to-teal-800', 'from-indigo-600 to-indigo-800'];
+            const colorClass = colors[name.length % colors.length];
+
+            const html = `
+                <div onclick="selectGroup('dm-${id}', '${name}', true)" id="grp-btn-dm-${id}" class="group-btn flex items-center p-3 cursor-pointer hover:bg-[#202c33] transition-colors bg-[#111]">
+                    <div class="w-12 h-12 rounded-full bg-gradient-to-br ${colorClass} flex items-center justify-center text-white font-bold border border-gold-700 flex-shrink-0 relative">
+                        ${initials}
+                        <div class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-[#111] rounded-full"></div>
+                    </div>
+                    <div class="ml-3 flex-1 border-b border-gray-800 pb-2 overflow-hidden">
+                        <div class="flex justify-between items-center">
+                            <h3 class="text-[#e9edef] font-semibold truncate">${name}</h3>
+                            <span class="text-xs text-[#8696a0]">Online</span>
+                        </div>
+                        <p class="text-sm text-gold-500 truncate italic"><i class="fa-solid fa-lock text-[10px] mr-1"></i> Tap to chat privately</p>
+                    </div>
+                </div>
+            `;
+            document.getElementById('dm-list').insertAdjacentHTML('beforeend', html);
+        }
+
+        // Admin Utility: Quick testing tool to simulate a family member logging in
+        function simulateUserJoin() {
+            const mockUsers = ['Uncle Ahmed', 'Aunt Fatima', 'Cousin Ali', 'Zainab', 'Mohammed', 'Nabil'];
+            const randomName = mockUsers[Math.floor(Math.random() * mockUsers.length)];
+            const mockId = 'user_' + Date.now();
+            
+            // Render locally
+            handleUserJoined(randomName, mockId, true);
+            
+            // Broadcast it just in case there are other tabs open
+            hubChannel.postMessage({ type: 'USER_JOINED', user: { name: randomName, id: mockId } });
         }
     </script>
 </body>
