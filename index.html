@@ -6,6 +6,7 @@
     <title>3M Hub - Family Portal</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
     <script>
         tailwind.config = {
             theme: {
@@ -433,7 +434,12 @@
 
             <!-- ADMIN VIEW -->
             <div id="view-admin" class="absolute inset-0 flex flex-col d-none bg-[#0A0A0A] p-6 overflow-y-auto">
-                <h2 class="text-3xl font-bold text-white mb-2"><i class="fa-solid fa-crown text-gold-500 mr-3"></i>Admin Control Panel</h2>
+                <div class="flex items-center justify-between mb-2">
+                    <h2 class="text-3xl font-bold text-white"><i class="fa-solid fa-crown text-gold-500 mr-3"></i>Admin Control Panel</h2>
+                    <button onclick="testEmailJS()" class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-blue-500 transition-colors ml-2 flex items-center">
+                        <i class="fa-solid fa-paper-plane mr-2"></i> Test Email
+                    </button>
+                </div>
                 <p class="text-gray-400 mb-8">Manage groups, approve users, and update the dynamic Family Tree.</p>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
@@ -1030,45 +1036,153 @@
             }
         }
 
-        function handleMeetAction() {
+        // Initialize EmailJS with your public key
+        emailjs.init("bq_8u9ZF8FZjOgB5M");
+
+        // Your EmailJS credentials
+        const EMAILJS_SERVICE_ID = "service_o9cvhce";
+        const EMAILJS_TEMPLATE_ID = "template_2oiwr79";
+
+        async function handleMeetAction() {
             if (AppState.isAdmin) {
-                // Admin Flow: Simulate emailing link and creating meeting
+                // Create Google Meet link
+                const meetUrl = `https://meet.google.com/new`;
+                
+                // Show loading overlay
                 const overlay = document.getElementById('email-overlay');
                 const progress = document.getElementById('email-progress');
                 const status = document.getElementById('email-status-text');
                 
                 overlay.classList.remove('hidden');
                 overlay.classList.add('flex');
+                progress.style.width = '20%';
+                status.innerText = "Preparing family contacts...";
                 
-                setTimeout(() => { progress.style.width = '30%'; status.innerText = "Retrieving contact list..."; }, 500);
-                setTimeout(() => { progress.style.width = '60%'; status.innerText = "Generating Google Meet url..."; }, 1500);
-                setTimeout(() => { progress.style.width = '90%'; status.innerText = "Dispatching emails to family..."; }, 2500);
+                // *** IMPORTANT: Replace these with your actual family members' emails ***
+                const familyMembers = [
+                    { name: "Grandpa", email: "grandpa@example.com" },
+                    { name: "Uncle Ahmed", email: "ahmed@example.com" },
+                    { name: "Aunt Fatima", email: "fatima@example.com" },
+                    { name: "Thaiyib", email: "thaiyibrasheed2011@gmail.com" } // Added your email
+                ];
+                
+                // Also send to the admin (yourself) for confirmation
+                const allRecipients = [
+                    ...familyMembers,
+                    { name: AppState.userName, email: AppState.userEmail }
+                ];
+                
+                let sentCount = 0;
+                let failedCount = 0;
+                
+                // Send emails to all family members
+                for (const member of allRecipients) {
+                    try {
+                        status.innerText = `Sending to ${member.name}...`;
+                        progress.style.width = `${20 + (sentCount / allRecipients.length) * 70}%`;
+                        
+                        const templateParams = {
+                            to_name: member.name,
+                            to_email: member.email,
+                            admin_name: AppState.userName,
+                            meet_link: meetUrl,
+                            meeting_time: new Date().toLocaleString()
+                        };
+                        
+                        const response = await emailjs.send(
+                            EMAILJS_SERVICE_ID,
+                            EMAILJS_TEMPLATE_ID,
+                            templateParams
+                        );
+                        
+                        if (response.status === 200) {
+                            sentCount++;
+                            console.log(`✅ Email sent to ${member.email}`);
+                        } else {
+                            failedCount++;
+                        }
+                    } catch (error) {
+                        console.error(`Failed to send to ${member.email}:`, error);
+                        failedCount++;
+                    }
+                    
+                    // Small delay to avoid rate limiting
+                    await new Promise(resolve => setTimeout(resolve, 500));
+                }
+                
+                // Show completion
+                progress.style.width = '100%';
+                status.innerText = `✅ Sent to ${sentCount} members${failedCount > 0 ? ` (${failedCount} failed)` : ''}!`;
                 
                 setTimeout(() => {
-                    progress.style.width = '100%'; 
-                    status.innerText = "Done!";
-                    AppState.meetingActive = true; 
+                    overlay.classList.remove('flex');
+                    overlay.classList.add('hidden');
+                    progress.style.width = '0%';
                     
-                    setTimeout(() => {
-                        overlay.classList.remove('flex');
-                        overlay.classList.add('hidden');
-                        progress.style.width = '0%';
+                    if (sentCount > 0) {
+                        showToast(
+                            '📧 Invitations Sent!', 
+                            `Meeting invites sent to ${sentCount} family members.`,
+                            '<div class="text-gold-500 text-xs mt-1">✨ Check your email for confirmation</div>'
+                        );
                         
-                        showToast('Emails Sent', 'Invitations successfully sent. Launching Meet...', '<i class="fa-solid fa-check text-green-500"></i>');
-                        window.open('https://meet.google.com/new', '_blank');
-                    }, 500);
-                }, 3500);
-
+                        // Open Google Meet in new tab
+                        setTimeout(() => {
+                            window.open(meetUrl, '_blank');
+                        }, 1000);
+                    } else {
+                        showToast('❌ Failed', 'Could not send emails. Check your EmailJS setup.', null);
+                    }
+                }, 1500);
+                
+                // Mark meeting as active
+                AppState.meetingActive = true;
+                
             } else {
-                // Member Flow
+                // Member flow - join existing meeting
                 if (AppState.meetingActive) {
                     showToast('Joining Meet', 'Redirecting to the secure family room...');
                     setTimeout(() => {
                         window.open('https://meet.google.com/', '_blank');
                     }, 1000);
                 } else {
-                    showCustomModal("Meeting Not Started", "The admin has not started the family meeting yet. Once they do, you will receive an email at " + AppState.userEmail + " with the link to join.");
+                    showCustomModal(
+                        "Meeting Not Started", 
+                        `The admin has not started the family meeting yet. Once they do, you will receive an email at ${AppState.userEmail} with the link to join.`,
+                        `<button onclick="closeModal()" class="w-full bg-gold-500 text-black font-bold py-2 rounded hover:bg-gold-400">OK</button>`
+                    );
                 }
+            }
+        }
+
+        // Test function to verify everything works
+        async function testEmailJS() {
+            try {
+                showToast('Testing...', 'Sending test email to your address...', null);
+                
+                const testResult = await emailjs.send(
+                    EMAILJS_SERVICE_ID,
+                    EMAILJS_TEMPLATE_ID,
+                    {
+                        to_name: AppState.userName,
+                        to_email: AppState.userEmail,
+                        admin_name: AppState.userName,
+                        meet_link: "https://meet.google.com/test-meeting",
+                        meeting_time: new Date().toLocaleString()
+                    }
+                );
+                
+                if (testResult.status === 200) {
+                    console.log("✅ Test successful:", testResult);
+                    showToast("✅ Test Email Sent!", `Check ${AppState.userEmail} inbox (and spam folder).`, null);
+                } else {
+                    showToast("⚠️ Test Issue", "Email sent but status: " + testResult.status, null);
+                }
+                return true;
+            } catch (error) {
+                console.error("❌ Test failed:", error);
+                showToast("❌ Error", "Check console. Make sure template has {{to_name}}, {{to_email}}, {{admin_name}}, {{meet_link}}, {{meeting_time}}", null);
+                return false;
             }
         }
 
