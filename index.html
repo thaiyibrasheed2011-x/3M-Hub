@@ -2,12 +2,11 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>3M Hub - Family Portal</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
     <script>
         tailwind.config = {
             theme: {
@@ -74,7 +73,7 @@
         /* NEW GOLDEN FAMILY TREE STYLES */
         #view-tree { background: radial-gradient(circle at center, #1f170c 0%, #0a0806 100%); font-family: 'Lora', serif; }
         
-        #tree-container { cursor: grab; touch-action: none; }
+        #tree-container { cursor: grab; }
         #tree-container:active { cursor: grabbing; }
         #tree-wrapper { transform-origin: top center; display: flex; flex-direction: column; align-items: center; margin-top: 60px; padding: 50px; }
         
@@ -120,7 +119,7 @@
         .leaf-id { display: block; font-family: 'Lora', serif; font-size: 10px; opacity: 0.8; margin-top: 4px; font-style: italic; }
 
         #tooltip {
-            position: fixed; background: rgba(15, 10, 5, 0.95); border: 1px solid #d4af37; color: #fff; padding: 15px; border-radius: 8px; pointer-events: none; opacity: 0; transition: opacity 0.2s; z-index: 1000; box-shadow: 0 10px 30px rgba(0,0,0,0.8); max-width: 250px; transform: translate(-50%, -110%);
+            position: fixed; background: rgba(15, 10, 5, 0.95); border: 1px solid #d4af37; color: #fff; padding: 15px; border-radius: 8px; pointer-events: auto; opacity: 0; transition: opacity 0.2s; z-index: 1000; box-shadow: 0 10px 30px rgba(0,0,0,0.8); max-width: 250px; transform: translate(-50%, -110%);
         }
         #tooltip h3 { font-family: 'Cinzel', serif; color: #ffdf00; font-size: 16px; margin-bottom: 8px; border-bottom: 1px solid rgba(212, 175, 55, 0.3); padding-bottom: 5px; }
         #tooltip p { font-size: 13px; margin-bottom: 4px; color: #ddd; }
@@ -136,21 +135,21 @@
 <body class="h-screen w-screen flex items-center justify-center bg-black">
 
     <!-- Splash Screen -->
-    <div id="splash-screen" class="absolute inset-0 flex flex-col items-center justify-center bg-black z-[100] transition-opacity duration-1000">
-        <div class="text-center p-8 border border-gold-500 rounded-2xl shadow-[0_0_30px_rgba(212,175,55,0.2)] bg-black/80 backdrop-blur-sm max-w-[90%] md:max-w-2xl fade-in">
-            <h1 class="arabic-text text-4xl md:text-7xl text-gold-500 mb-6 font-bold leading-tight">بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيم</h1>
-            <h2 class="text-lg md:text-xl text-offwhite mb-8 tracking-wider font-light">In the name of Allah, the Most Gracious, the Most Merciful</h2>
+    <div id="splash-screen" class="absolute inset-0 flex flex-col items-center justify-center bg-black z-50 transition-opacity duration-1000">
+        <div class="text-center p-8 border border-gold-500 rounded-2xl shadow-[0_0_30px_rgba(212,175,55,0.2)] bg-black/80 backdrop-blur-sm max-w-2xl fade-in">
+            <h1 class="arabic-text text-5xl md:text-7xl text-gold-500 mb-6 font-bold leading-tight">بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيم</h1>
+            <h2 class="text-xl text-offwhite mb-8 tracking-wider font-light">In the name of Allah, the Most Gracious, the Most Merciful</h2>
             <div class="w-full h-px bg-gradient-to-r from-transparent via-gold-500 to-transparent my-8"></div>
-            <p class="arabic-text text-xl md:text-2xl text-gold-400 mb-4">"خَيْرُكُمْ خَيْرُكُمْ لأَهْلِهِ وَأَنَا خَيْرُكُمْ لأَهْلِي"</p>
-            <p class="text-gray-300 italic text-base md:text-lg leading-relaxed">"The best of you are those who are best to their families, and I am the best of you to my family."</p>
-            <p class="text-gold-600 mt-2 text-xs md:text-sm">- Prophet Muhammad (ﷺ) [Tirmidhi]</p>
-            <button onclick="hideSplash()" class="mt-8 md:mt-12 px-8 py-3 bg-transparent border-2 border-gold-500 text-gold-500 rounded-full hover:bg-gold-500 hover:text-black transition-all duration-300 font-semibold tracking-wide">Enter Portal</button>
+            <p class="arabic-text text-2xl text-gold-400 mb-4">"خَيْرُكُمْ خَيْرُكُمْ لأَهْلِهِ وَأَنَا خَيْرُكُمْ لأَهْلِي"</p>
+            <p class="text-gray-300 italic text-lg leading-relaxed">"The best of you are those who are best to their families, and I am the best of you to my family."</p>
+            <p class="text-gold-600 mt-2 text-sm">- Prophet Muhammad (ﷺ) [Tirmidhi]</p>
+            <button onclick="hideSplash()" class="mt-12 px-8 py-3 bg-transparent border-2 border-gold-500 text-gold-500 rounded-full hover:bg-gold-500 hover:text-black transition-all duration-300 font-semibold tracking-wide">Enter Portal</button>
         </div>
     </div>
 
     <!-- Screen 1: Initial Login Screen -->
-    <div id="login-screen" class="absolute inset-0 flex items-center justify-center bg-black z-[90] d-none px-4">
-        <div class="bg-[#111] p-8 md:p-10 rounded-2xl border border-gold-700 shadow-[0_0_40px_rgba(212,175,55,0.1)] w-full max-w-sm flex flex-col items-center">
+    <div id="login-screen" class="absolute inset-0 flex items-center justify-center bg-black z-40 d-none">
+        <div class="bg-[#111] p-10 rounded-2xl border border-gold-700 shadow-[0_0_40px_rgba(212,175,55,0.1)] w-96 flex flex-col items-center">
             <div class="w-20 h-20 rounded-full border-2 border-gold-500 flex items-center justify-center mb-6 shadow-[0_0_15px_rgba(212,175,55,0.5)]">
                 <i class="fa-solid fa-users text-3xl text-gold-500"></i>
             </div>
@@ -159,27 +158,27 @@
             
             <div class="w-full relative mb-4">
                 <i class="fa-solid fa-user absolute left-4 top-1/2 transform -translate-y-1/2 text-gold-600"></i>
-                <input type="text" id="username-input" placeholder="Your Name" class="w-full bg-[#1a1a1a] text-white border border-gray-700 rounded-lg py-3 pl-12 pr-4 focus:outline-none focus:border-gold-500 focus:ring-1 focus:ring-gold-500 transition-colors text-[16px]">
+                <input type="text" id="username-input" placeholder="Your Name" class="w-full bg-[#1a1a1a] text-white border border-gray-700 rounded-lg py-3 pl-12 pr-4 focus:outline-none focus:border-gold-500 focus:ring-1 focus:ring-gold-500 transition-colors">
             </div>
 
             <div class="w-full relative mb-6">
                 <i class="fa-solid fa-lock absolute left-4 top-1/2 transform -translate-y-1/2 text-gold-600"></i>
-                <input type="password" id="passcode-input" placeholder="Passcode" class="w-full bg-[#1a1a1a] text-white border border-gray-700 rounded-lg py-3 pl-12 pr-4 focus:outline-none focus:border-gold-500 focus:ring-1 focus:ring-gold-500 transition-colors text-[16px]">
+                <input type="password" id="passcode-input" placeholder="Passcode" class="w-full bg-[#1a1a1a] text-white border border-gray-700 rounded-lg py-3 pl-12 pr-4 focus:outline-none focus:border-gold-500 focus:ring-1 focus:ring-gold-500 transition-colors">
             </div>
 
             <div class="flex items-center self-start mb-6">
-                <input type="checkbox" id="admin-toggle" class="w-5 h-5 accent-gold-500 bg-gray-700 border-gray-600 rounded">
-                <label for="admin-toggle" class="ml-3 text-sm font-medium text-gray-300">Login as Admin</label>
+                <input type="checkbox" id="admin-toggle" class="w-4 h-4 accent-gold-500 bg-gray-700 border-gray-600 rounded">
+                <label for="admin-toggle" class="ml-2 text-sm font-medium text-gray-300">Login as Admin</label>
             </div>
 
-            <button onclick="attemptLogin()" class="w-full bg-gold-500 hover:bg-gold-400 text-black font-bold py-3.5 px-4 rounded-lg transition-colors shadow-lg shadow-gold-500/20">Continue</button>
+            <button onclick="attemptLogin()" class="w-full bg-gold-500 hover:bg-gold-400 text-black font-bold py-3 px-4 rounded-lg transition-colors shadow-lg shadow-gold-500/20">Continue to Email Setup</button>
             <p id="login-error" class="text-red-500 text-sm mt-4 hidden">Please enter your name and correct passcode.</p>
         </div>
     </div>
 
     <!-- Screen 2: Gmail Login Screen -->
-    <div id="gmail-login-screen" class="absolute inset-0 flex items-center justify-center bg-black z-[90] d-none px-4">
-        <div class="bg-[#111] p-8 md:p-10 rounded-2xl border border-gray-800 shadow-[0_0_50px_rgba(66,133,244,0.08)] w-full max-w-sm flex flex-col items-center relative overflow-hidden">
+    <div id="gmail-login-screen" class="absolute inset-0 flex items-center justify-center bg-black z-40 d-none">
+        <div class="bg-[#111] p-10 rounded-2xl border border-gray-800 shadow-[0_0_50px_rgba(66,133,244,0.08)] w-[400px] flex flex-col items-center relative overflow-hidden">
             <div class="absolute top-0 left-0 right-0 h-1.5 flex">
                 <div class="h-full flex-1 bg-google-blue"></div>
                 <div class="h-full flex-1 bg-google-red"></div>
@@ -202,15 +201,15 @@
             
             <div class="w-full relative mb-4 group">
                 <i class="fa-regular fa-envelope absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-500 group-focus-within:text-google-blue transition-colors"></i>
-                <input type="email" id="gmail-input" placeholder="Email Address" class="w-full bg-[#1a1a1a] text-white border border-gray-700 rounded-lg py-3.5 pl-12 pr-4 focus:outline-none focus:border-google-blue focus:ring-1 focus:ring-google-blue transition-all text-[16px]">
+                <input type="email" id="gmail-input" placeholder="Email Address" class="w-full bg-[#1a1a1a] text-white border border-gray-700 rounded-lg py-3.5 pl-12 pr-4 focus:outline-none focus:border-google-blue focus:ring-1 focus:ring-google-blue transition-all">
             </div>
 
             <div class="w-full relative mb-8 group">
                 <i class="fa-solid fa-key absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-500 group-focus-within:text-google-blue transition-colors"></i>
-                <input type="password" id="gmail-pass-input" placeholder="Password" class="w-full bg-[#1a1a1a] text-white border border-gray-700 rounded-lg py-3.5 pl-12 pr-4 focus:outline-none focus:border-google-blue focus:ring-1 focus:ring-google-blue transition-all text-[16px]">
+                <input type="password" id="gmail-pass-input" placeholder="Password" class="w-full bg-[#1a1a1a] text-white border border-gray-700 rounded-lg py-3.5 pl-12 pr-4 focus:outline-none focus:border-google-blue focus:ring-1 focus:ring-google-blue transition-all">
             </div>
 
-            <button onclick="attemptGmailLogin()" class="w-full bg-google-blue hover:bg-blue-600 text-white font-medium py-3.5 px-4 rounded-lg transition-all shadow-lg flex items-center justify-center group min-h-[48px]">
+            <button onclick="attemptGmailLogin()" class="w-full bg-google-blue hover:bg-blue-600 text-white font-medium py-3.5 px-4 rounded-lg transition-all shadow-lg flex items-center justify-center group">
                 <span class="tracking-wide">Complete Setup</span>
                 <i class="fa-solid fa-arrow-right ml-3 group-hover:translate-x-1 transition-transform"></i>
             </button>
@@ -219,89 +218,69 @@
     </div>
 
     <!-- Main App Container -->
-    <div id="app-container" class="w-full h-full flex flex-col md:flex-row bg-[#0A0A0A] d-none relative">
+    <div id="app-container" class="w-full h-full flex bg-[#0A0A0A] d-none">
         
-        <!-- Responsive Navigation (Bottom Bar on Mobile, Sidebar on Desktop) -->
-        <nav class="fixed bottom-0 left-0 right-0 md:relative md:w-20 bg-[#111] border-t md:border-t-0 md:border-r border-gray-800 flex flex-row md:flex-col justify-between transition-all duration-300 z-[60] md:z-20 shrink-0 h-[68px] md:h-full">
-            <div class="flex flex-row md:flex-col w-full h-full md:justify-between items-center pb-safe">
-                <!-- Desktop Header/Logo -->
-                <div class="hidden md:flex p-6 items-center justify-center border-b border-gray-800 w-full">
+        <!-- Sidebar Navigation -->
+        <nav class="w-20 bg-[#111] border-r border-gray-800 flex flex-col justify-between transition-all duration-300 z-20 shrink-0">
+            <div>
+                <div class="p-4 md:p-6 flex items-center justify-center border-b border-gray-800">
                     <div class="w-10 h-10 rounded-full bg-gold-500 flex items-center justify-center text-black font-bold text-xl flex-shrink-0 shadow-[0_0_10px_rgba(212,175,55,0.4)] cursor-pointer" title="3M HUB">3M</div>
                 </div>
-                
-                <!-- Nav Buttons -->
-                <div class="flex flex-row md:flex-col w-full md:w-auto justify-around md:justify-start flex-1 md:flex-none items-center md:space-y-4 md:mt-4 px-2 md:px-0">
-                    <button onclick="switchTab('chat')" id="nav-chat" class="nav-btn flex items-center justify-center w-12 h-12 rounded-lg transition-colors bg-gray-800 text-gold-500 border-b-2 md:border-b-0 md:border-l-2 border-gold-500 group" title="Messages">
-                        <i class="fa-brands fa-whatsapp text-2xl md:text-xl group-hover:scale-110 transition-transform"></i>
+                <div class="flex flex-col mt-4 space-y-4 px-2 items-center">
+                    <button onclick="switchTab('chat')" id="nav-chat" class="nav-btn flex items-center justify-center w-12 h-12 rounded-lg text-gray-400 hover:bg-gray-800 hover:text-gold-400 transition-colors bg-gray-800 text-gold-500 border-l-2 border-gold-500 group" title="Messages">
+                        <i class="fa-brands fa-whatsapp text-xl group-hover:scale-110 transition-transform"></i>
                     </button>
-                    <button onclick="switchTab('meet')" id="nav-meet" class="nav-btn flex items-center justify-center w-12 h-12 rounded-lg text-gray-400 hover:bg-gray-800 hover:text-gold-400 transition-colors border-b-2 md:border-b-0 md:border-l-2 border-transparent group" title="Google Meet">
-                        <i class="fa-solid fa-video text-2xl md:text-xl group-hover:scale-110 transition-transform"></i>
+                    <button onclick="switchTab('meet')" id="nav-meet" class="nav-btn flex items-center justify-center w-12 h-12 rounded-lg text-gray-400 hover:bg-gray-800 hover:text-gold-400 transition-colors border-l-2 border-transparent group" title="Google Meet">
+                        <i class="fa-solid fa-video text-xl group-hover:scale-110 transition-transform"></i>
                     </button>
-                    <button onclick="switchTab('tree')" id="nav-tree" class="nav-btn flex items-center justify-center w-12 h-12 rounded-lg text-gray-400 hover:bg-gray-800 hover:text-gold-400 transition-colors border-b-2 md:border-b-0 md:border-l-2 border-transparent group" title="Family Tree">
-                        <i class="fa-solid fa-sitemap text-2xl md:text-xl group-hover:scale-110 transition-transform"></i>
+                    <button onclick="switchTab('tree')" id="nav-tree" class="nav-btn flex items-center justify-center w-12 h-12 rounded-lg text-gray-400 hover:bg-gray-800 hover:text-gold-400 transition-colors border-l-2 border-transparent group" title="Family Tree">
+                        <i class="fa-solid fa-sitemap text-xl group-hover:scale-110 transition-transform"></i>
                     </button>
-                    <button onclick="switchTab('admin')" id="nav-admin" class="nav-btn admin-only hidden flex items-center justify-center w-12 h-12 rounded-lg text-gray-400 hover:bg-gray-800 hover:text-gold-400 transition-colors border-b-2 md:border-b-0 md:border-l-2 border-transparent group md:mt-8" title="Admin Panel">
-                        <i class="fa-solid fa-shield-halved text-2xl md:text-xl group-hover:scale-110 transition-transform"></i>
+                    <button onclick="switchTab('admin')" id="nav-admin" class="nav-btn admin-only hidden flex items-center justify-center w-12 h-12 rounded-lg text-gray-400 hover:bg-gray-800 hover:text-gold-400 transition-colors border-l-2 border-transparent group mt-8" title="Admin Panel">
+                        <i class="fa-solid fa-shield-halved text-xl group-hover:scale-110 transition-transform"></i>
                     </button>
-                    
-                    <!-- Mobile Only Profile Menu Wrapper -->
-                    <div class="md:hidden relative group flex items-center justify-center">
-                        <button onclick="document.getElementById('mobile-profile-menu').classList.toggle('hidden')" class="flex items-center justify-center w-12 h-12 rounded-lg text-gray-400 hover:text-gold-400 transition-colors">
-                            <i class="fa-solid fa-user text-2xl"></i>
-                        </button>
-                        <!-- Mobile Profile Dropup -->
-                        <div id="mobile-profile-menu" class="hidden absolute bottom-[60px] right-2 bg-[#111] border border-gray-800 rounded-lg shadow-2xl p-3 flex flex-col space-y-3 w-48 z-50">
-                            <div class="border-b border-gray-700 pb-2">
-                                <p id="mobile-user-name" class="text-white font-bold text-sm truncate">User</p>
-                                <p id="mobile-user-role" class="text-gold-500 text-xs">Member</p>
-                            </div>
-                            <button onclick="logout()" class="text-red-400 text-sm py-2 px-2 hover:bg-gray-800 rounded flex items-center justify-start transition-colors w-full"><i class="fa-solid fa-sign-out-alt mr-3"></i> Logout</button>
-                        </div>
-                    </div>
                 </div>
-                
-                <!-- Desktop Bottom Section -->
-                <div class="hidden md:flex p-4 border-t border-gray-800 flex-col items-center space-y-6 w-full">
-                    <div class="hidden">
-                        <p id="user-name-display"></p>
-                        <p id="user-email-display"></p>
-                        <p id="user-role-display"></p>
-                    </div>
-                    <div class="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center text-white overflow-hidden border border-gold-600 cursor-pointer" title="User Profile">
-                        <i class="fa-solid fa-user"></i>
-                    </div>
-                    <button onclick="logout()" class="text-gray-500 hover:text-red-400 transition-colors p-2" title="Logout"><i class="fa-solid fa-sign-out-alt text-xl"></i></button>
+            </div>
+            
+            <div class="p-4 border-t border-gray-800 flex flex-col items-center space-y-6">
+                <div class="hidden">
+                    <p id="user-name-display"></p>
+                    <p id="user-email-display"></p>
+                    <p id="user-role-display"></p>
                 </div>
+                <div class="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center text-white overflow-hidden border border-gold-600 cursor-pointer" title="User Profile">
+                    <i class="fa-solid fa-user"></i>
+                </div>
+                <button onclick="logout()" class="text-gray-500 hover:text-red-400 transition-colors" title="Logout"><i class="fa-solid fa-sign-out-alt text-xl"></i></button>
             </div>
         </nav>
 
         <!-- Main Content Area -->
-        <main class="flex-1 relative bg-[#0A0A0A] pb-[68px] md:pb-0 w-full overflow-hidden">
+        <main class="flex-1 relative bg-[#0A0A0A]">
             
             <!-- CHAT VIEW -->
-            <div id="view-chat" class="absolute inset-0 flex flex-row pb-[68px] md:pb-0">
-                <!-- Chat List Column -->
-                <div id="chat-list-col" class="w-full md:w-1/3 md:max-w-[300px] border-r border-gray-800 bg-[#111] flex flex-col h-full">
-                    <div class="p-4 border-b border-gray-800 bg-[#202c33] flex items-center justify-between min-h-[64px]">
+            <div id="view-chat" class="absolute inset-0 flex">
+                <div class="w-1/3 max-w-[300px] border-r border-gray-800 bg-[#111] flex flex-col">
+                    <div class="p-4 border-b border-gray-800 bg-[#202c33] flex items-center justify-between">
                         <h2 class="text-xl font-bold text-[#e9edef]">Chats</h2>
-                        <button class="p-2 min-w-[44px] min-h-[44px] flex items-center justify-center"><i class="fa-solid fa-plus text-[#aebac1] hover:text-white text-lg"></i></button>
+                        <i class="fa-solid fa-plus text-[#aebac1] cursor-pointer hover:text-white"></i>
                     </div>
                     <div class="overflow-y-auto flex-1 bg-[#111] space-y-[1px]">
-                        <div onclick="selectGroup('group1'); showMobileChat();" id="grp-btn-group1" class="group-btn flex items-center p-3 cursor-pointer bg-[#2a3942] hover:bg-[#202c33] transition-colors">
+                        <div onclick="selectGroup('group1')" id="grp-btn-group1" class="group-btn flex items-center p-3 cursor-pointer bg-[#2a3942] hover:bg-[#202c33] transition-colors">
                             <div class="w-12 h-12 rounded-full bg-gradient-to-br from-gold-400 to-gold-600 flex items-center justify-center text-black font-bold flex-shrink-0">MF</div>
                             <div class="ml-3 flex-1 border-b border-gray-800 pb-2 overflow-hidden">
                                 <div class="flex justify-between items-center">
-                                    <h3 class="text-[#e9edef] font-semibold text-base truncate">Main Family</h3>
+                                    <h3 class="text-[#e9edef] font-semibold truncate">Main Family</h3>
                                     <span class="text-xs text-gold-500">10:00 AM</span>
                                 </div>
                                 <p class="text-sm text-[#8696a0] truncate"><i class="fa-solid fa-check-double text-blue-500 mr-1"></i> Admin: Eid Mubarak everyone!</p>
                             </div>
                         </div>
-                        <div onclick="selectGroup('group2'); showMobileChat();" id="grp-btn-group2" class="group-btn flex items-center p-3 cursor-pointer hover:bg-[#202c33] transition-colors">
+                        <div onclick="selectGroup('group2')" id="grp-btn-group2" class="group-btn flex items-center p-3 cursor-pointer hover:bg-[#202c33] transition-colors">
                             <div class="w-12 h-12 rounded-full bg-gradient-to-br from-gray-600 to-gray-800 flex items-center justify-center text-white font-bold border border-gold-700 flex-shrink-0">CH</div>
                             <div class="ml-3 flex-1 border-b border-gray-800 pb-2 overflow-hidden">
                                 <div class="flex justify-between items-center">
-                                    <h3 class="text-[#e9edef] font-semibold text-base truncate">Cousins Hub</h3>
+                                    <h3 class="text-[#e9edef] font-semibold truncate">Cousins Hub</h3>
                                     <span class="text-xs text-[#8696a0]">Yesterday</span>
                                 </div>
                                 <p class="text-sm text-[#8696a0] truncate">Ali: Who is ready for games?</p>
@@ -313,14 +292,14 @@
                             <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse shadow-[0_0_8px_rgba(34,197,94,0.8)]"></span>
                         </div>
                         <div id="dm-list" class="space-y-[1px]">
-                            <div onclick="selectGroup('dm-admin', 'Grandpa (Admin)', true); showMobileChat();" id="grp-btn-dm-admin" class="group-btn flex items-center p-3 cursor-pointer hover:bg-[#202c33] transition-colors bg-[#111]">
+                            <div onclick="selectGroup('dm-admin', 'Grandpa (Admin)', true)" id="grp-btn-dm-admin" class="group-btn flex items-center p-3 cursor-pointer hover:bg-[#202c33] transition-colors bg-[#111]">
                                 <div class="w-12 h-12 rounded-full bg-gradient-to-br from-green-600 to-green-800 flex items-center justify-center text-white font-bold border border-gold-700 flex-shrink-0 relative">
                                     GR
                                     <div class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-[#111] rounded-full"></div>
                                 </div>
                                 <div class="ml-3 flex-1 border-b border-gray-800 pb-2 overflow-hidden">
                                     <div class="flex justify-between items-center">
-                                        <h3 class="text-[#e9edef] font-semibold text-base truncate">Grandpa (Admin)</h3>
+                                        <h3 class="text-[#e9edef] font-semibold truncate">Grandpa (Admin)</h3>
                                         <span class="text-xs text-[#8696a0]">Online</span>
                                     </div>
                                     <p class="text-sm text-gold-500 truncate italic"><i class="fa-solid fa-lock text-[10px] mr-1"></i> Tap to chat privately</p>
@@ -330,90 +309,82 @@
                     </div>
                 </div>
 
-                <!-- Chat Detail Column -->
-                <div id="chat-detail-col" class="absolute inset-0 md:relative flex-1 flex-col hidden md:flex bg-[#0b141a] z-20 h-full">
-                    <div class="h-16 border-b border-gray-800 bg-[#202c33] flex items-center px-2 md:px-4 justify-between z-10 min-h-[64px] shrink-0">
+                <div class="flex-1 flex flex-col bg-[#0b141a] relative overflow-hidden">
+                    <div class="h-16 border-b border-gray-800 bg-[#202c33] flex items-center px-4 justify-between z-10">
                         <div class="flex items-center cursor-pointer">
-                            <button onclick="hideMobileChat()" class="md:hidden mr-2 p-2 min-w-[44px] min-h-[44px] flex items-center justify-center text-[#aebac1] hover:text-white transition-colors">
-                                <i class="fa-solid fa-arrow-left text-lg"></i>
-                            </button>
-                            <div class="w-10 h-10 rounded-full bg-gold-500 flex items-center justify-center text-black font-bold mr-3 shrink-0"><span id="chat-header-avatar">MF</span></div>
-                            <div class="overflow-hidden">
-                                <h2 id="current-chat-title" class="text-base font-bold text-[#e9edef] leading-tight truncate">Main Family</h2>
-                                <p class="text-xs text-[#8696a0] truncate">Tap here for group info</p>
+                            <div class="w-10 h-10 rounded-full bg-gold-500 flex items-center justify-center text-black font-bold mr-3"><span id="chat-header-avatar">MF</span></div>
+                            <div>
+                                <h2 id="current-chat-title" class="text-base font-bold text-[#e9edef] leading-tight">Main Family</h2>
+                                <p class="text-xs text-[#8696a0]">Tap here for group info</p>
                             </div>
                         </div>
-                        <div class="flex space-x-1 md:space-x-4 text-[#aebac1]">
-                            <button class="hover:text-gold-400 p-2 min-w-[44px] min-h-[44px] flex items-center justify-center"><i class="fa-solid fa-video text-lg"></i></button>
-                            <button class="hover:text-gold-400 p-2 min-w-[44px] min-h-[44px] flex items-center justify-center hidden sm:flex"><i class="fa-solid fa-magnifying-glass text-lg"></i></button>
-                            <button class="hover:text-gold-400 p-2 min-w-[44px] min-h-[44px] flex items-center justify-center"><i class="fa-solid fa-ellipsis-vertical text-lg"></i></button>
+                        <div class="flex space-x-6 text-[#aebac1]">
+                            <button class="hover:text-gold-400"><i class="fa-solid fa-video"></i></button>
+                            <button class="hover:text-gold-400"><i class="fa-solid fa-magnifying-glass"></i></button>
+                            <button class="hover:text-gold-400"><i class="fa-solid fa-ellipsis-vertical"></i></button>
                         </div>
                     </div>
 
                     <div class="absolute inset-0 opacity-10 pointer-events-none" style="background-image: url('https://static.whatsapp.net/rsrc.php/v3/yl/r/r7z1K4Q8Pz_.png'); background-repeat: repeat; background-color: #0b141a;"></div>
 
-                    <div id="chat-messages" class="flex-1 overflow-y-auto p-3 md:p-4 space-y-2 z-10 w-full">
+                    <div id="chat-messages" class="flex-1 overflow-y-auto p-4 space-y-2 z-10">
                         <div class="flex justify-center mb-4 mt-2">
                             <span class="bg-[#182229] text-[#8696a0] text-xs px-3 py-1 rounded-lg uppercase tracking-wide">Today</span>
                         </div>
                         <div class="flex justify-center my-4">
-                            <span class="bg-[#182229] text-[#ffd279] text-xs px-3 py-2 rounded-lg text-center max-w-[95%] md:max-w-[85%] shadow-sm border border-gold-600/30 leading-relaxed">
+                            <span class="bg-[#182229] text-[#ffd279] text-xs px-3 py-2 rounded-lg text-center max-w-[85%] shadow-sm border border-gold-600/30">
                                 <i class="fa-solid fa-lock mr-1"></i> Messages are end-to-end encrypted. No one outside of this chat can read or listen to them.
                             </span>
                         </div>
                     </div>
 
-                    <div class="p-2 md:p-3 bg-[#202c33] z-10 flex items-center space-x-1 md:space-x-2 relative shrink-0 min-h-[60px]">
-                        <div id="emoji-picker" class="absolute bottom-16 left-2 bg-[#202c33] border border-gray-700 rounded-lg p-3 w-72 max-w-[90vw] max-h-48 overflow-y-auto hidden z-20 shadow-2xl flex-wrap gap-2 text-xl select-none"></div>
+                    <div class="p-3 bg-[#202c33] z-10 flex items-center space-x-2 relative">
+                        <div id="emoji-picker" class="absolute bottom-16 left-2 bg-[#202c33] border border-gray-700 rounded-lg p-3 w-72 max-h-48 overflow-y-auto hidden z-20 shadow-2xl flex-wrap gap-2 text-xl select-none"></div>
                         <input type="file" id="file-attachment" class="hidden" accept="image/*, application/pdf, .doc, .docx, .txt" multiple onchange="handleFileUpload(event)">
 
-                        <button onclick="toggleEmojiPicker()" id="emoji-btn" class="p-2 text-[#aebac1] hover:text-gold-500 rounded-full transition-colors relative min-w-[44px] min-h-[44px] flex items-center justify-center"><i class="fa-regular fa-face-smile text-2xl pointer-events-none"></i></button>
-                        <button onclick="document.getElementById('file-attachment').click()" class="p-2 text-[#aebac1] hover:text-gold-500 rounded-full transition-colors min-w-[44px] min-h-[44px] flex items-center justify-center"><i class="fa-solid fa-plus text-2xl"></i></button>
+                        <button onclick="toggleEmojiPicker()" id="emoji-btn" class="p-2 text-[#aebac1] hover:text-gold-500 rounded-full transition-colors relative"><i class="fa-regular fa-face-smile text-xl pointer-events-none"></i></button>
+                        <button onclick="document.getElementById('file-attachment').click()" class="p-2 text-[#aebac1] hover:text-gold-500 rounded-full transition-colors"><i class="fa-solid fa-plus text-xl"></i></button>
                         
-                        <div class="flex-1 bg-[#2a3942] rounded-full md:rounded-lg px-4 py-2 md:py-3 flex items-center shadow-inner">
-                            <input type="text" id="msg-input" placeholder="Message" class="flex-1 bg-transparent border-none focus:outline-none text-[#e9edef] text-[16px] w-full" onkeypress="handleChatEnter(event)">
+                        <div class="flex-1 bg-[#2a3942] rounded-lg px-3 py-2 flex items-center">
+                            <input type="text" id="msg-input" placeholder="Type a message" class="flex-1 bg-transparent border-none focus:outline-none text-[#e9edef] text-[15px]" onkeypress="handleChatEnter(event)">
                             <div id="recording-ui" class="hidden items-center space-x-2 mr-2 text-red-500 font-mono text-sm">
                                 <i class="fa-solid fa-circle pulse-record text-xs"></i><span id="record-timer">00:00</span>
                             </div>
                         </div>
 
-                        <button id="btn-mic" onmousedown="startRecording()" onmouseup="stopRecording()" onmouseleave="stopRecording()" ontouchstart="startRecording(event)" ontouchend="stopRecording(event)" ontouchcancel="stopRecording(event)" class="w-12 h-12 min-w-[48px] min-h-[48px] flex items-center justify-center bg-gold-500 text-black rounded-full hover:bg-gold-400 transition-colors shrink-0 no-select ml-1 shadow-md"><i class="fa-solid fa-microphone text-xl pointer-events-none"></i></button>
-                        <button id="btn-send" onclick="sendMessage()" class="w-12 h-12 min-w-[48px] min-h-[48px] hidden items-center justify-center bg-gold-500 text-black rounded-full hover:bg-gold-400 transition-colors shrink-0 ml-1 shadow-md"><i class="fa-solid fa-paper-plane text-xl"></i></button>
+                        <button id="btn-mic" onmousedown="startRecording()" onmouseup="stopRecording()" onmouseleave="stopRecording()" ontouchstart="startRecording(event)" ontouchend="stopRecording(event)" ontouchcancel="stopRecording(event)" class="w-10 h-10 flex items-center justify-center bg-gold-500 text-black rounded-full hover:bg-gold-400 transition-colors shrink-0 no-select"><i class="fa-solid fa-microphone text-lg pointer-events-none"></i></button>
+                        <button id="btn-send" onclick="sendMessage()" class="w-10 h-10 hidden items-center justify-center bg-gold-500 text-black rounded-full hover:bg-gold-400 transition-colors shrink-0"><i class="fa-solid fa-paper-plane text-lg"></i></button>
                     </div>
                 </div>
             </div>
 
             <!-- MEETINGS VIEW -->
-            <div id="view-meet" class="absolute inset-0 flex flex-col d-none bg-[#050505] overflow-y-auto">
-                <div class="flex-1 flex flex-col items-center justify-center p-6 md:p-8 text-center relative overflow-hidden min-h-full">
-                    <div class="absolute top-0 left-1/2 transform -translate-x-1/2 w-full md:w-3/4 h-3/4 bg-google-blue rounded-full mix-blend-screen filter blur-[150px] opacity-10 pointer-events-none"></div>
-                    
-                    <button onclick="openScheduleListModal()" class="absolute top-4 right-4 md:top-8 md:right-8 bg-[#111] border border-gray-800 px-4 py-2 md:px-5 md:py-3 rounded-xl shadow-[0_0_15px_rgba(0,0,0,0.5)] text-gold-500 hover:bg-gray-800 hover:border-gold-500 transition-all flex items-center space-x-2 md:space-x-3 z-20 group">
+            <div id="view-meet" class="absolute inset-0 flex flex-col d-none bg-[#050505]">
+                <div class="flex-1 flex flex-col items-center justify-center p-8 text-center relative overflow-hidden">
+                    <div class="absolute top-0 left-1/2 transform -translate-x-1/2 w-3/4 h-3/4 bg-google-blue rounded-full mix-blend-screen filter blur-[150px] opacity-10 pointer-events-none"></div>
+                    <button onclick="openScheduleListModal()" class="absolute top-8 right-8 bg-[#111] border border-gray-800 px-5 py-3 rounded-xl shadow-[0_0_15px_rgba(0,0,0,0.5)] text-gold-500 hover:bg-gray-800 hover:border-gold-500 transition-all flex items-center space-x-3 z-20 group">
                         <i class="fa-regular fa-calendar-check text-lg group-hover:scale-110 transition-transform"></i>
-                        <span class="font-bold tracking-wide hidden sm:inline">Schedule</span>
-                        <span id="schedule-badge" class="hidden bg-google-blue text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center sm:ml-2 absolute -top-2 -right-2 sm:relative sm:top-0 sm:right-0">0</span>
+                        <span class="font-bold tracking-wide">Schedule</span>
+                        <span id="schedule-badge" class="hidden bg-google-blue text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center ml-2">0</span>
                     </button>
-
-                    <div class="flex items-center space-x-3 md:space-x-4 mb-6 md:mb-8 relative z-10 mt-12 md:mt-0">
-                        <div class="w-16 h-16 md:w-20 md:h-20 rounded-2xl bg-white flex items-center justify-center shadow-lg"><img src="https://upload.wikimedia.org/wikipedia/commons/9/9b/Google_Meet_icon_%282020%29.svg" class="w-10 h-10 md:w-12 md:h-12" alt="Google Meet"></div>
+                    <div class="flex items-center space-x-4 mb-6 relative z-10">
+                        <div class="w-20 h-20 rounded-2xl bg-white flex items-center justify-center shadow-lg"><img src="https://upload.wikimedia.org/wikipedia/commons/9/9b/Google_Meet_icon_%282020%29.svg" class="w-12 h-12" alt="Google Meet"></div>
                         <i class="fa-solid fa-plus text-gray-600"></i>
-                        <div class="w-16 h-16 md:w-20 md:h-20 rounded-2xl bg-[#111] border border-gold-500 flex items-center justify-center shadow-[0_0_15px_rgba(212,175,55,0.3)]"><span class="text-gold-500 font-bold text-xl md:text-2xl">3M</span></div>
+                        <div class="w-20 h-20 rounded-2xl bg-[#111] border border-gold-500 flex items-center justify-center shadow-[0_0_15px_rgba(212,175,55,0.3)]"><span class="text-gold-500 font-bold text-2xl">3M</span></div>
                     </div>
-                    
-                    <h2 class="text-3xl md:text-4xl font-bold text-white mb-3 md:mb-4 relative z-10 tracking-tight leading-tight px-2">Family Google Meet</h2>
-                    <p class="text-gray-400 max-w-lg mb-8 md:mb-10 relative z-10 text-sm md:text-base px-4">Join the scheduled family gathering securely. When the admin starts the meeting, everyone will receive an automated invitation email containing the secure link.</p>
-                    
+                    <h2 class="text-4xl font-bold text-white mb-4 relative z-10 tracking-tight">Family Google Meet</h2>
+                    <p class="text-gray-400 max-w-lg mb-10 relative z-10">Join the scheduled family gathering securely. When the admin starts the meeting, everyone will receive an automated invitation email containing the secure link.</p>
                     <div class="relative z-10">
-                        <button id="btn-action-meet" onclick="handleMeetAction()" class="group px-6 md:px-8 py-3.5 md:py-4 bg-google-blue text-white font-bold rounded-lg hover:bg-blue-600 transition-all shadow-[0_0_20px_rgba(66,133,244,0.4)] hover:-translate-y-1 flex items-center space-x-3 w-full md:w-auto justify-center min-w-[200px]">
+                        <button id="btn-action-meet" onclick="handleMeetAction()" class="group px-8 py-4 bg-google-blue text-white font-bold rounded-lg hover:bg-blue-600 transition-all shadow-[0_0_20px_rgba(66,133,244,0.4)] hover:-translate-y-1 flex items-center space-x-3">
                             <i class="fa-solid fa-video text-xl"></i><span id="meet-btn-text">Join Meeting</span>
                         </button>
                     </div>
 
-                    <div id="email-overlay" class="absolute inset-0 bg-black/90 z-50 hidden flex-col items-center justify-center px-4">
+                    <div id="email-overlay" class="absolute inset-0 bg-black/90 z-50 hidden flex-col items-center justify-center">
                         <i class="fa-regular fa-paper-plane text-5xl text-gold-500 mb-6 animate-bounce"></i>
-                        <h3 class="text-2xl font-bold text-white mb-2 text-center">Broadcasting to Family...</h3>
+                        <h3 class="text-2xl font-bold text-white mb-2">Broadcasting to Family...</h3>
                         <p class="text-gray-400 mb-8 max-w-sm text-center text-sm">Generating secure Google Meet link and dispatching email invitations to all registered members.</p>
-                        <div class="w-full max-w-xs bg-gray-800 rounded-full h-2 mb-4 overflow-hidden">
+                        <div class="w-64 bg-gray-800 rounded-full h-2 mb-4 overflow-hidden">
                             <div class="bg-gold-500 h-2 rounded-full" style="width: 0%; transition: width 3s ease-in-out;" id="email-progress"></div>
                         </div>
                         <p id="email-status-text" class="text-gold-400 font-mono text-sm">Preparing...</p>
@@ -425,22 +396,22 @@
             <div id="view-tree" class="absolute inset-0 flex flex-col d-none overflow-hidden">
                 <canvas id="particle-canvas" class="absolute inset-0 pointer-events-none z-0"></canvas>
 
-                <div class="p-4 md:p-6 bg-[#111]/80 backdrop-blur-sm border-b border-gold-700 shadow-sm flex flex-col md:flex-row justify-between items-start md:items-center z-20 space-y-2 md:space-y-0 shrink-0">
+                <div class="p-6 bg-[#111]/80 backdrop-blur-sm border-b border-gold-700 shadow-sm flex justify-between items-center z-20">
                     <div>
-                        <h2 class="text-xl md:text-2xl font-bold text-gold-500 font-cinzel">MKMK Family Tree</h2>
-                        <p class="text-xs md:text-sm text-gray-400">Drag to pan, scroll to zoom. Tap members for info.</p>
+                        <h2 class="text-2xl font-bold text-gold-500 font-cinzel">MKMK Family Tree - Golden Edition</h2>
+                        <p class="text-sm text-gray-400">Drag to pan, scroll to zoom. Hover over members for info.</p>
                     </div>
-                    <div class="flex items-center space-x-4 md:space-x-6 flex-wrap">
+                    <div class="flex items-center space-x-6">
                         <div class="flex items-center text-xs text-white"><span class="w-3 h-3 rounded-full bg-blue-500 mr-2 border border-blue-300"></span> Male</div>
                         <div class="flex items-center text-xs text-white"><span class="w-3 h-3 rounded-full bg-pink-500 mr-2 border border-pink-300"></span> Female</div>
                         <div class="flex items-center text-xs text-white"><span class="w-3 h-3 rounded-full bg-gray-500 mr-2 border border-gray-300 filter grayscale"></span> Deceased</div>
                     </div>
                 </div>
                 
-                <div class="absolute bottom-[80px] md:bottom-6 right-4 md:right-6 z-30 flex gap-2 controls">
-                    <button id="btn-zoom-in" class="bg-gradient-to-br from-gold-700 to-gold-500 border border-gold-300 text-black w-10 h-10 md:w-auto md:px-4 md:py-2 rounded shadow-lg font-bold hover:scale-105 transition-transform flex justify-center items-center text-xl">+</button>
-                    <button id="btn-reset" class="bg-gradient-to-br from-gold-700 to-gold-500 border border-gold-300 text-black px-3 py-2 md:px-4 md:py-2 rounded shadow-lg font-bold font-cinzel hover:scale-105 transition-transform text-sm md:text-base">Reset</button>
-                    <button id="btn-zoom-out" class="bg-gradient-to-br from-gold-700 to-gold-500 border border-gold-300 text-black w-10 h-10 md:w-auto md:px-4 md:py-2 rounded shadow-lg font-bold hover:scale-105 transition-transform flex justify-center items-center text-xl">-</button>
+                <div class="absolute bottom-6 right-6 z-30 flex gap-2 controls">
+                    <button id="btn-zoom-in" class="bg-gradient-to-br from-gold-700 to-gold-500 border border-gold-300 text-black px-4 py-2 rounded shadow-lg font-bold hover:scale-105 transition-transform">+</button>
+                    <button id="btn-reset" class="bg-gradient-to-br from-gold-700 to-gold-500 border border-gold-300 text-black px-4 py-2 rounded shadow-lg font-bold font-cinzel hover:scale-105 transition-transform">Reset View</button>
+                    <button id="btn-zoom-out" class="bg-gradient-to-br from-gold-700 to-gold-500 border border-gold-300 text-black px-4 py-2 rounded shadow-lg font-bold hover:scale-105 transition-transform">-</button>
                 </div>
 
                 <div id="tree-container" class="flex-1 relative z-10 w-full h-full overflow-hidden">
@@ -457,43 +428,44 @@
                     <p><strong>ID/Num:</strong> <span id="tt-id"></span></p>
                     <p><strong>Spouse:</strong> <span id="tt-spouse"></span></p>
                     <p><strong>Branch:</strong> <span id="tt-branch"></span></p>
+                    <button id="tt-edit-btn" class="hidden mt-3 w-full bg-gold-500 text-black text-xs font-bold py-1.5 rounded hover:bg-gold-400 transition-colors shadow"><i class="fa-solid fa-pen mr-1"></i> Edit Member</button>
                 </div>
             </div>
 
             <!-- ADMIN VIEW -->
-            <div id="view-admin" class="absolute inset-0 flex flex-col d-none bg-[#0A0A0A] p-4 md:p-6 overflow-y-auto w-full">
-                <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-2 space-y-3 sm:space-y-0">
-                    <h2 class="text-2xl md:text-3xl font-bold text-white flex items-center"><i class="fa-solid fa-crown text-gold-500 mr-2 md:mr-3"></i>Admin Panel</h2>
-                    <button onclick="testEmailJS()" class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-blue-500 transition-colors flex items-center justify-center w-full sm:w-auto shadow-md">
+            <div id="view-admin" class="absolute inset-0 flex flex-col d-none bg-[#0A0A0A] p-6 overflow-y-auto">
+                <div class="flex items-center justify-between mb-2">
+                    <h2 class="text-3xl font-bold text-white"><i class="fa-solid fa-crown text-gold-500 mr-3"></i>Admin Control Panel</h2>
+                    <button onclick="testEmailJS()" class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-blue-500 transition-colors ml-2 flex items-center">
                         <i class="fa-solid fa-paper-plane mr-2"></i> Test Email
                     </button>
                 </div>
-                <p class="text-gray-400 mb-6 md:mb-8 text-sm md:text-base">Manage groups, approve users, and update the dynamic Family Tree.</p>
+                <p class="text-gray-400 mb-8">Manage groups, approve users, and update the dynamic Family Tree.</p>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mb-6">
-                    <div class="bg-[#111] p-5 md:p-6 rounded-xl border border-gray-800 w-full">
-                        <h3 class="text-lg md:text-xl font-bold text-gold-500 mb-4 border-b border-gray-800 pb-2">Group Management</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                    <div class="bg-[#111] p-6 rounded-xl border border-gray-800">
+                        <h3 class="text-xl font-bold text-gold-500 mb-4 border-b border-gray-800 pb-2">Group Management</h3>
                         <div class="space-y-3">
                             <div class="flex justify-between items-center p-3 bg-gray-800 rounded">
-                                <span id="admin-group-name-group1" class="text-white text-sm md:text-base">Main Family</span>
-                                <button onclick="promptEditGroup('group1')" class="text-gray-400 hover:text-white min-w-[44px] min-h-[44px] flex items-center justify-center"><i class="fa-solid fa-pen"></i></button>
+                                <span id="admin-group-name-group1" class="text-white">Main Family</span>
+                                <button onclick="promptEditGroup('group1')" class="text-gray-400 hover:text-white"><i class="fa-solid fa-pen"></i></button>
                             </div>
                             <div class="flex justify-between items-center p-3 bg-gray-800 rounded">
-                                <span id="admin-group-name-group2" class="text-white text-sm md:text-base">Cousins Hub</span>
-                                <button onclick="promptEditGroup('group2')" class="text-gray-400 hover:text-white min-w-[44px] min-h-[44px] flex items-center justify-center"><i class="fa-solid fa-pen"></i></button>
+                                <span id="admin-group-name-group2" class="text-white">Cousins Hub</span>
+                                <button onclick="promptEditGroup('group2')" class="text-gray-400 hover:text-white"><i class="fa-solid fa-pen"></i></button>
                             </div>
-                            <button class="w-full mt-4 py-3 md:py-2 border border-dashed border-gray-600 text-gray-400 rounded hover:border-gold-500 hover:text-gold-500 transition-colors font-medium">+ Create New Group</button>
+                            <button class="w-full mt-4 py-2 border border-dashed border-gray-600 text-gray-400 rounded hover:border-gold-500 hover:text-gold-500 transition-colors">+ Create New Group</button>
                         </div>
                     </div>
 
-                    <div class="bg-[#111] p-5 md:p-6 rounded-xl border border-gray-800 w-full">
-                        <h3 class="text-lg md:text-xl font-bold text-gold-500 mb-4 border-b border-gray-800 pb-2">Pending Approvals</h3>
+                    <div class="bg-[#111] p-6 rounded-xl border border-gray-800">
+                        <h3 class="text-xl font-bold text-gold-500 mb-4 border-b border-gray-800 pb-2">Pending Approvals</h3>
                         <div class="space-y-3">
                             <div class="flex justify-between items-center p-3 bg-gray-800 rounded border border-gray-700">
-                                <div><p class="text-white font-semibold text-sm md:text-base">Ahmed R.</p><p class="text-xs text-gray-400">Claims to be Uncle Tariq's son</p></div>
+                                <div><p class="text-white font-semibold">Ahmed R.</p><p class="text-xs text-gray-400">Claims to be Uncle Tariq's son</p></div>
                                 <div class="flex space-x-2">
-                                    <button class="w-10 h-10 md:w-8 md:h-8 rounded bg-green-600 text-white hover:bg-green-500 flex justify-center items-center"><i class="fa-solid fa-check"></i></button>
-                                    <button class="w-10 h-10 md:w-8 md:h-8 rounded bg-red-600 text-white hover:bg-red-500 flex justify-center items-center"><i class="fa-solid fa-times"></i></button>
+                                    <button class="w-8 h-8 rounded bg-green-600 text-white hover:bg-green-500 flex justify-center items-center"><i class="fa-solid fa-check"></i></button>
+                                    <button class="w-8 h-8 rounded bg-red-600 text-white hover:bg-red-500 flex justify-center items-center"><i class="fa-solid fa-times"></i></button>
                                 </div>
                             </div>
                              <p class="text-center text-sm text-gray-500 mt-4 italic">No other pending requests.</p>
@@ -501,51 +473,81 @@
                     </div>
                     
                     <!-- Dynamic Family Tree Management -->
-                    <div class="bg-[#111] p-5 md:p-6 rounded-xl border border-gold-700 shadow-[0_0_15px_rgba(212,175,55,0.1)] md:col-span-2 w-full">
-                        <h3 class="text-lg md:text-xl font-bold text-gold-500 mb-4 border-b border-gray-800 pb-2">Family Tree Management</h3>
+                    <div class="bg-[#111] p-6 rounded-xl border border-gold-700 shadow-[0_0_15px_rgba(212,175,55,0.1)] md:col-span-2">
+                        <h3 class="text-xl font-bold text-gold-500 mb-4 border-b border-gray-800 pb-2">Golden Family Tree Management</h3>
                         
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                             <!-- Edit Existing Member -->
                             <div>
-                                <h4 class="text-white font-semibold mb-3 text-sm md:text-base">Edit Existing Member</h4>
+                                <h4 class="text-white font-semibold mb-3">Edit Existing Member</h4>
                                 <label class="block text-gray-400 text-xs mb-1">Select Family Member</label>
-                                <select id="admin-tree-select" onchange="loadSelectedNodeData()" class="w-full bg-[#1a1a1a] text-white border border-gray-700 rounded-lg py-3 md:py-2 px-3 mb-4 focus:outline-none focus:border-gold-500 text-[16px] md:text-sm"></select>
+                                <select id="admin-tree-select" onchange="loadSelectedNodeData()" class="w-full bg-[#1a1a1a] text-white border border-gray-700 rounded-lg py-2 px-3 mb-4 focus:outline-none focus:border-gold-500"></select>
 
                                 <label class="block text-gray-400 text-xs mb-1">Name</label>
-                                <input type="text" id="admin-node-name" class="w-full bg-[#1a1a1a] text-white border border-gray-700 rounded-lg py-3 md:py-2 px-3 mb-3 text-[16px] md:text-sm">
+                                <input type="text" id="admin-node-name" class="w-full bg-[#1a1a1a] text-white border border-gray-700 rounded-lg py-2 px-3 mb-3">
 
                                 <label class="block text-gray-400 text-xs mb-1">Spouse Info</label>
-                                <input type="text" id="admin-node-spouse" class="w-full bg-[#1a1a1a] text-white border border-gray-700 rounded-lg py-3 md:py-2 px-3 mb-3 text-[16px] md:text-sm">
+                                <input type="text" id="admin-node-spouse" class="w-full bg-[#1a1a1a] text-white border border-gray-700 rounded-lg py-2 px-3 mb-3">
 
-                                <label class="block text-gray-400 text-xs mb-1">Photo URL (For Avatar)</label>
-                                <input type="text" id="admin-node-photo" placeholder="https://..." class="w-full bg-[#1a1a1a] text-white border border-gray-700 rounded-lg py-3 md:py-2 px-3 mb-3 text-[16px] md:text-sm">
-
-                                <div class="flex gap-4 mb-5">
-                                    <label class="flex items-center text-sm text-gray-300 cursor-pointer min-h-[30px]"><input type="radio" name="admin-node-status" value="alive" class="mr-2 w-4 h-4"> Alive</label>
-                                    <label class="flex items-center text-sm text-gray-300 cursor-pointer min-h-[30px]"><input type="radio" name="admin-node-status" value="deceased" class="mr-2 w-4 h-4"> Deceased</label>
+                                <label class="block text-gray-400 text-xs mb-1">Upload Photo (Auto-Cropped)</label>
+                                <div class="flex items-center space-x-4 mb-3">
+                                    <div id="admin-photo-preview" class="w-16 h-16 rounded-full bg-gray-800 border-2 border-gold-500 overflow-hidden flex items-center justify-center shrink-0">
+                                        <i class="fa-solid fa-user text-gray-500"></i>
+                                    </div>
+                                    <div class="flex-1">
+                                        <input type="file" id="admin-node-photo-file" accept="image/*" class="w-full text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-gray-800 file:text-gold-500 hover:file:bg-gray-700 cursor-pointer">
+                                        <input type="hidden" id="admin-node-photo-base64">
+                                        <p class="text-xs text-gray-500 mt-1">Image will be resized to a secure internal format.</p>
+                                    </div>
                                 </div>
 
-                                <button onclick="saveNodeData()" class="bg-gold-500 text-black font-bold py-3 md:py-2 px-4 rounded-lg hover:bg-gold-400 transition-colors w-full shadow-lg shadow-gold-500/20">Update Details</button>
+                                <div class="flex gap-4 mb-4">
+                                    <label class="flex items-center text-sm text-gray-300 cursor-pointer"><input type="radio" name="admin-node-status" value="alive" class="mr-2"> Alive</label>
+                                    <label class="flex items-center text-sm text-gray-300 cursor-pointer"><input type="radio" name="admin-node-status" value="deceased" class="mr-2"> Deceased (Grayscale)</label>
+                                </div>
+
+                                <div class="flex space-x-2">
+                                    <button onclick="saveNodeData()" class="flex-1 bg-gold-500 text-black font-bold py-2 px-4 rounded hover:bg-gold-400 transition-colors shadow-lg shadow-gold-500/20"><i class="fa-solid fa-save mr-2"></i> Update</button>
+                                    <button onclick="deleteSelectedNode()" class="bg-red-600/20 text-red-500 border border-red-900 font-bold py-2 px-4 rounded hover:bg-red-600 hover:text-white transition-colors" title="Delete Member"><i class="fa-solid fa-trash"></i></button>
+                                </div>
                             </div>
                             
                             <!-- Add Child Node -->
-                            <div class="border-t md:border-t-0 md:border-l border-gray-800 pt-6 md:pt-0 md:pl-8">
-                                <h4 class="text-white font-semibold mb-3 text-sm md:text-base">Add Child to Selected</h4>
-                                
-                                <label class="block text-gray-400 text-xs mb-1">Child's Name</label>
-                                <input type="text" id="admin-new-child-name" placeholder="Name" class="w-full bg-[#1a1a1a] text-white border border-gray-700 rounded-lg py-3 md:py-2 px-3 mb-3 text-[16px] md:text-sm">
-                                
-                                <label class="block text-gray-400 text-xs mb-1">Branch Code / ID</label>
-                                <input type="text" id="admin-new-child-branch" placeholder="e.g. 15 4" class="w-full bg-[#1a1a1a] text-white border border-gray-700 rounded-lg py-3 md:py-2 px-3 mb-3 text-[16px] md:text-sm">
+                            <div class="border-t md:border-t-0 md:border-l border-gray-800 pt-6 md:pt-0 md:pl-8 flex flex-col justify-between">
+                                <div>
+                                    <h4 class="text-white font-semibold mb-3">Add Child to Selected Member</h4>
+                                    
+                                    <label class="block text-gray-400 text-xs mb-1">Child's Name</label>
+                                    <input type="text" id="admin-new-child-name" placeholder="Name" class="w-full bg-[#1a1a1a] text-white border border-gray-700 rounded-lg py-2 px-3 mb-3">
+                                    
+                                    <label class="block text-gray-400 text-xs mb-1">Branch Code / ID</label>
+                                    <input type="text" id="admin-new-child-branch" placeholder="e.g. 15 4" class="w-full bg-[#1a1a1a] text-white border border-gray-700 rounded-lg py-2 px-3 mb-3">
 
-                                <div class="flex gap-4 mb-6 mt-2">
-                                    <label class="flex items-center text-sm text-gray-300 cursor-pointer min-h-[30px]"><input type="radio" name="admin-new-child-gender" value="M" checked class="mr-2 w-4 h-4"> Male</label>
-                                    <label class="flex items-center text-sm text-gray-300 cursor-pointer min-h-[30px]"><input type="radio" name="admin-new-child-gender" value="F" class="mr-2 w-4 h-4"> Female</label>
+                                    <div class="flex gap-4 mb-5 mt-2">
+                                        <label class="flex items-center text-sm text-gray-300 cursor-pointer"><input type="radio" name="admin-new-child-gender" value="M" checked class="mr-2"> Male</label>
+                                        <label class="flex items-center text-sm text-gray-300 cursor-pointer"><input type="radio" name="admin-new-child-gender" value="F" class="mr-2"> Female</label>
+                                    </div>
                                 </div>
 
-                                <button onclick="addChildToSelected()" class="border-2 border-dashed border-gray-600 text-gray-300 font-bold py-3 md:py-2 px-4 rounded-lg hover:border-gold-500 hover:text-gold-500 transition-colors w-full flex justify-center items-center">
-                                    <i class="fa-solid fa-plus mr-2"></i> Add Child
+                                <button onclick="addChildToSelected()" class="border-2 border-dashed border-gray-600 text-gray-300 font-bold py-2 px-4 rounded hover:border-gold-500 hover:text-gold-500 transition-colors w-full flex justify-center items-center mt-auto">
+                                    <i class="fa-solid fa-plus mr-2"></i> Add Child to Tree
                                 </button>
+                            </div>
+
+                            <!-- Bulk Import Section -->
+                            <div class="mt-4 border-t border-gray-800 pt-6 col-span-1 md:col-span-2">
+                                <h4 class="text-white font-semibold mb-2"><i class="fa-solid fa-file-import text-gold-500 mr-2"></i>Bulk Import Family Data (JSON)</h4>
+                                <p class="text-xs text-gray-400 mb-3">Paste a structured JSON list to add multiple missing members to the selected parent at once. Format: <code>[{"name": "New Name", "gender": "M", "spouse": "Spouse Name", "id": "11 1"}]</code></p>
+                                <textarea id="admin-bulk-json" rows="4" class="w-full bg-[#1a1a1a] text-white border border-gray-700 rounded-lg py-2 px-3 mb-3 font-mono text-xs focus:outline-none focus:border-gold-500" placeholder='[
+    {
+        "name": "Missing Member 1",
+        "gender": "F",
+        "spouse": "Spouse",
+        "id": "123",
+        "branch": "MKMK"
+    }
+]'></textarea>
+                                <button onclick="importFamilyJSON()" class="bg-gray-800 text-gold-500 border border-gray-700 font-bold py-2 px-4 rounded hover:bg-gray-700 hover:border-gold-500 transition-colors flex items-center"><i class="fa-solid fa-upload mr-2"></i> Import to Selected Parent</button>
                             </div>
                         </div>
                     </div>
@@ -555,59 +557,59 @@
     </div>
 
     <!-- Modals & Toasts -->
-    <div id="custom-modal" class="fixed inset-0 bg-black/80 z-[110] hidden items-center justify-center backdrop-blur-sm p-4">
-        <div class="bg-[#111] border border-gold-600 p-6 rounded-xl max-w-sm w-full shadow-[0_0_30px_rgba(212,175,55,0.2)]">
+    <div id="custom-modal" class="fixed inset-0 bg-black/80 z-[100] hidden items-center justify-center backdrop-blur-sm">
+        <div class="bg-[#111] border border-gold-600 p-6 rounded-xl max-w-sm w-full mx-4 shadow-[0_0_30px_rgba(212,175,55,0.2)]">
             <h3 id="modal-title" class="text-xl font-bold text-white mb-2">Notice</h3>
             <p id="modal-msg" class="text-gray-300 mb-6 text-sm">Message here</p>
-            <div id="modal-actions" class="w-full space-y-2"><button onclick="closeModal()" class="w-full bg-gold-500 text-black font-bold py-3 md:py-2 rounded-lg hover:bg-gold-400">OK</button></div>
+            <div id="modal-actions" class="w-full space-y-2"><button onclick="closeModal()" class="w-full bg-gold-500 text-black font-bold py-2 rounded hover:bg-gold-400">OK</button></div>
         </div>
     </div>
 
-    <div id="input-modal" class="fixed inset-0 bg-black/80 z-[110] hidden items-center justify-center backdrop-blur-sm p-4">
-        <div class="bg-[#111] border border-gold-600 p-6 rounded-xl max-w-sm w-full shadow-[0_0_30px_rgba(212,175,55,0.2)]">
+    <div id="input-modal" class="fixed inset-0 bg-black/80 z-[100] hidden items-center justify-center backdrop-blur-sm">
+        <div class="bg-[#111] border border-gold-600 p-6 rounded-xl max-w-sm w-full mx-4 shadow-[0_0_30px_rgba(212,175,55,0.2)]">
             <h3 id="input-modal-title" class="text-xl font-bold text-white mb-2">Edit</h3>
-            <input type="text" id="input-modal-val" class="w-full bg-[#1a1a1a] text-white border border-gray-700 rounded-lg py-3 px-4 mb-5 focus:outline-none focus:border-gold-500 text-[16px]">
+            <input type="text" id="input-modal-val" class="w-full bg-[#1a1a1a] text-white border border-gray-700 rounded-lg py-3 px-4 mb-5 focus:outline-none focus:border-gold-500">
             <div class="flex space-x-3">
-                <button onclick="closeInputModal()" class="flex-1 border border-gray-600 text-gray-300 font-bold py-3 md:py-2 rounded-lg hover:bg-gray-800 transition-colors">Cancel</button>
-                <button id="input-modal-confirm" class="flex-1 bg-gold-500 text-black font-bold py-3 md:py-2 rounded-lg hover:bg-gold-400 transition-colors">Save</button>
+                <button onclick="closeInputModal()" class="flex-1 border border-gray-600 text-gray-300 font-bold py-2 rounded hover:bg-gray-800 transition-colors">Cancel</button>
+                <button id="input-modal-confirm" class="flex-1 bg-gold-500 text-black font-bold py-2 rounded hover:bg-gold-400 transition-colors">Save</button>
             </div>
         </div>
     </div>
 
-    <div id="schedule-list-modal" class="fixed inset-0 bg-black/80 z-[110] hidden items-center justify-center backdrop-blur-sm p-4">
-        <div class="bg-[#111] border border-gray-700 p-5 md:p-6 rounded-xl max-w-md w-full shadow-[0_0_40px_rgba(0,0,0,0.5)] relative">
-            <button onclick="closeScheduleListModal()" class="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors w-10 h-10 md:w-8 md:h-8 rounded-full hover:bg-gray-800 flex items-center justify-center"><i class="fa-solid fa-times text-lg"></i></button>
-            <h3 class="text-lg md:text-xl font-bold text-gold-500 mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between pr-8 gap-2">
-                <span><i class="fa-regular fa-calendar-check mr-2"></i> Schedule</span>
-                <span id="current-time-display" class="text-xs text-gray-400 font-mono bg-gray-800 px-2 py-1 rounded w-fit"></span>
+    <div id="schedule-list-modal" class="fixed inset-0 bg-black/80 z-[100] hidden items-center justify-center backdrop-blur-sm">
+        <div class="bg-[#111] border border-gray-700 p-6 rounded-xl max-w-md w-full mx-4 shadow-[0_0_40px_rgba(0,0,0,0.5)] relative">
+            <button onclick="closeScheduleListModal()" class="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors w-8 h-8 rounded-full hover:bg-gray-800 flex items-center justify-center"><i class="fa-solid fa-times"></i></button>
+            <h3 class="text-xl font-bold text-gold-500 mb-6 flex items-center justify-between pr-8">
+                <span><i class="fa-regular fa-calendar-check mr-2"></i> Meeting Schedule</span>
+                <span id="current-time-display" class="text-xs text-gray-400 font-mono bg-gray-800 px-2 py-1 rounded"></span>
             </h3>
-            <div id="schedule-list" class="space-y-3 max-h-[50vh] overflow-y-auto pr-2">
+            <div id="schedule-list" class="space-y-3 max-h-[60vh] overflow-y-auto pr-2">
                 <div id="no-schedule-msg" class="text-center py-8">
                     <div class="w-16 h-16 rounded-full bg-gray-800 flex items-center justify-center mx-auto mb-3"><i class="fa-solid fa-calendar-xmark text-2xl text-gray-500"></i></div>
                     <p class="text-gray-400 text-sm italic">No upcoming meetings scheduled.</p>
                 </div>
             </div>
-            <button onclick="promptScheduleMeeting()" class="admin-only hidden w-full mt-6 py-3 border border-dashed border-gray-600 text-gray-400 text-sm rounded-lg hover:border-gold-500 hover:text-gold-500 transition-colors font-semibold flex justify-center items-center min-h-[48px]">
+            <button onclick="promptScheduleMeeting()" class="admin-only hidden w-full mt-6 py-3 border border-dashed border-gray-600 text-gray-400 text-sm rounded-lg hover:border-gold-500 hover:text-gold-500 transition-colors font-semibold flex justify-center items-center">
                 <i class="fa-solid fa-plus mr-2"></i> Schedule New Meeting
             </button>
         </div>
     </div>
 
-    <div id="schedule-modal" class="fixed inset-0 bg-black/90 z-[120] hidden items-center justify-center backdrop-blur-sm p-4">
-        <div class="bg-[#111] border border-gold-600 p-6 rounded-xl max-w-sm w-full shadow-[0_0_30px_rgba(212,175,55,0.2)]">
+    <div id="schedule-modal" class="fixed inset-0 bg-black/90 z-[110] hidden items-center justify-center backdrop-blur-sm">
+        <div class="bg-[#111] border border-gold-600 p-6 rounded-xl max-w-sm w-full mx-4 shadow-[0_0_30px_rgba(212,175,55,0.2)]">
             <h3 class="text-xl font-bold text-white mb-4">Schedule Google Meet</h3>
             <label class="block text-gray-400 text-xs mb-1">Meeting Title</label>
-            <input type="text" id="schedule-title" placeholder="e.g. Weekly Catchup" class="w-full bg-[#1a1a1a] text-white border border-gray-700 rounded-lg py-3 px-4 mb-4 focus:outline-none focus:border-gold-500 text-[16px]">
+            <input type="text" id="schedule-title" placeholder="e.g. Weekly Catchup" class="w-full bg-[#1a1a1a] text-white border border-gray-700 rounded-lg py-3 px-4 mb-4 focus:outline-none focus:border-gold-500">
             <label class="block text-gray-400 text-xs mb-1">Date and Time</label>
-            <input type="datetime-local" id="schedule-datetime" class="w-full bg-[#1a1a1a] text-white border border-gray-700 rounded-lg py-3 px-4 mb-6 focus:outline-none focus:border-gold-500 text-[16px]">
+            <input type="datetime-local" id="schedule-datetime" class="w-full bg-[#1a1a1a] text-white border border-gray-700 rounded-lg py-3 px-4 mb-6 focus:outline-none focus:border-gold-500">
             <div class="flex space-x-3">
-                <button onclick="closeScheduleModal()" class="flex-1 border border-gray-600 text-gray-300 font-bold py-3 md:py-2 rounded-lg hover:bg-gray-800 transition-colors">Cancel</button>
-                <button onclick="confirmSchedule()" class="flex-1 bg-google-blue text-white font-bold py-3 md:py-2 rounded-lg hover:bg-blue-600 transition-colors flex justify-center items-center"><i class="fa-regular fa-calendar-check mr-2"></i> Schedule</button>
+                <button onclick="closeScheduleModal()" class="flex-1 border border-gray-600 text-gray-300 font-bold py-2 rounded hover:bg-gray-800 transition-colors">Cancel</button>
+                <button onclick="confirmSchedule()" class="flex-1 bg-google-blue text-white font-bold py-2 rounded hover:bg-blue-600 transition-colors flex justify-center items-center"><i class="fa-regular fa-calendar-check mr-2"></i> Schedule</button>
             </div>
         </div>
     </div>
 
-    <div id="toast-container" class="fixed top-4 right-4 md:top-6 md:right-6 z-[120] flex flex-col space-y-3 pointer-events-none w-full max-w-xs px-4 md:px-0"></div>
+    <div id="toast-container" class="fixed top-4 right-4 z-[100] flex flex-col space-y-3 pointer-events-none"></div>
 
     <script>
         // --- State Management ---
@@ -628,7 +630,7 @@
         let uidCounter = 0;
         const familyData = [
             {
-                name: "MOHAMED ABUBACKER", gender: "M", spouse: "1. ZAINAB (Vavanna)", id: "1", branch: "MKMK", status: "deceased",
+                name: "MOHAMED ABUBACKER", gender: "M", spouse: "1. ZAINAB (Vavanna)", id: "1", branch: "MKMK", status: "deceased", photo: "",
                 children: [
                     {
                         name: "MOHIDEEN SAHIB", gender: "M", spouse: "AHAMED FATHIMA", id: "11", branch: "MKMK", status: "deceased",
@@ -702,10 +704,12 @@
             }
         ];
 
+        // Assign Unique IDs for the Admin Panel drop down.
         function assignUids(nodes) {
             nodes.forEach(node => {
                 if(!node.uid) node.uid = 'u_' + uidCounter++;
                 if(!node.status) node.status = 'alive';
+                if(!node.photo) node.photo = '';
                 if(node.children) assignUids(node.children);
             });
         }
@@ -738,30 +742,15 @@
             scheduleModal: document.getElementById('schedule-modal'),
             toastContainer: document.getElementById('toast-container'),
 
+            // Tree elements
             treeContainer: document.getElementById('family-tree-container'),
             tt: document.getElementById('tooltip'),
             ttName: document.getElementById('tt-name'),
             ttId: document.getElementById('tt-id'),
             ttSpouse: document.getElementById('tt-spouse'),
             ttBranch: document.getElementById('tt-branch'),
+            ttEditBtn: document.getElementById('tt-edit-btn'),
         };
-
-        // --- MOBILE CHAT NAVIGATION HELPERS ---
-        function showMobileChat() {
-            const detailCol = document.getElementById('chat-detail-col');
-            if (detailCol) {
-                detailCol.classList.remove('hidden');
-                detailCol.classList.add('flex');
-            }
-        }
-        
-        function hideMobileChat() {
-            const detailCol = document.getElementById('chat-detail-col');
-            if (detailCol) {
-                detailCol.classList.add('hidden');
-                detailCol.classList.remove('flex');
-            }
-        }
 
         // --- EMOJIS & CHAT ---
         const commonEmojis = ['😀','😂','🥺','😎','😍','🙏','👍','🔥','❤️','🎉','✨','💯','🙌','🤔','😭','🥰','👏','💪','😊','😉','😋','😅','😇','🙃','😘','😜','🤫','😴','🤮','🤯','🥳','🤠','😇','🤝','✌️','👋','👀','🧠','👨‍👩‍👧','🏠'];
@@ -769,7 +758,7 @@
             const picker = document.getElementById('emoji-picker');
             commonEmojis.forEach(emoji => {
                 const span = document.createElement('span');
-                span.className = 'cursor-pointer hover:bg-gray-700 p-2 md:p-1.5 rounded transition-colors text-2xl md:text-xl';
+                span.className = 'cursor-pointer hover:bg-gray-700 p-1.5 rounded transition-colors';
                 span.innerText = emoji;
                 span.onclick = () => { el.msgInput.value += emoji; el.msgInput.dispatchEvent(new Event('input')); };
                 picker.appendChild(span);
@@ -798,9 +787,10 @@
             if (nodeData.status === 'deceased') leafDiv.classList.add('deceased');
             if (nodeData.children && nodeData.children.length > 0) leafDiv.classList.add('has-children');
 
+            // Avatar 
             const avatarDiv = document.createElement('div');
             avatarDiv.className = 'avatar';
-            if (nodeData.photo) {
+            if (nodeData.photo && nodeData.photo.length > 10) {
                 avatarDiv.innerHTML = `<img src="${nodeData.photo}" alt="${nodeData.name}">`;
             } else {
                 avatarDiv.innerHTML = `<svg viewBox="0 0 24 24" fill="currentColor">
@@ -822,17 +812,10 @@
             leafDiv.dataset.spouse = nodeData.spouse || "N/A";
             leafDiv.dataset.id = nodeData.id || "N/A";
             leafDiv.dataset.branch = nodeData.branch || "N/A";
+            leafDiv.dataset.uid = nodeData.uid;
 
             leafDiv.addEventListener('mouseenter', showTooltip);
             leafDiv.addEventListener('mouseleave', hideTooltip);
-            
-            // Mobile tap tooltip trigger
-            leafDiv.addEventListener('touchstart', (e) => {
-                if(!isDragging) {
-                    showTooltip(e.touches ? e.touches[0] : e, true);
-                    setTimeout(() => hideTooltip({currentTarget: leafDiv}), 3000); // Auto hide on mobile
-                }
-            }, {passive: true});
 
             li.appendChild(leafDiv);
 
@@ -864,7 +847,7 @@
         // --- TREE PAN & ZOOM ---
         const wrapper = document.getElementById('tree-wrapper');
         const container = document.getElementById('tree-container');
-        let scale = window.innerWidth < 768 ? 0.4 : 0.6; // Better default for mobile
+        let scale = 0.6;
         let panX = 0;
         let panY = 0;
         let isDragging = false;
@@ -894,67 +877,48 @@
             e.preventDefault();
             const zoomSpeed = 0.05;
             scale += e.deltaY < 0 ? zoomSpeed : -zoomSpeed;
-            scale = Math.min(Math.max(0.1, scale), 3);
+            scale = Math.min(Math.max(0.2, scale), 3);
             updateTransform();
         });
 
-        // Touch support for Tree Pan
-        container.addEventListener('touchstart', (e) => {
-            if (e.touches.length === 1) {
-                isDragging = true;
-                startX = e.touches[0].clientX - panX;
-                startY = e.touches[0].clientY - panY;
-            }
-        }, {passive: true});
-
-        container.addEventListener('touchmove', (e) => {
-            if (isDragging && e.touches.length === 1) {
-                e.preventDefault(); // Prevents page scrolling during pan
-                panX = e.touches[0].clientX - startX;
-                panY = e.touches[0].clientY - startY;
-                updateTransform();
-            }
-        }, {passive: false});
-
-        container.addEventListener('touchend', () => {
-            setTimeout(() => { isDragging = false; }, 50);
-        });
-
         document.getElementById('btn-zoom-in').addEventListener('click', () => { scale = Math.min(scale + 0.2, 3); updateTransform(); });
-        document.getElementById('btn-zoom-out').addEventListener('click', () => { scale = Math.max(scale - 0.2, 0.1); updateTransform(); });
-        document.getElementById('btn-reset').addEventListener('click', () => { scale = window.innerWidth < 768 ? 0.4 : 0.6; panX = 0; panY = 0; updateTransform(); });
+        document.getElementById('btn-zoom-out').addEventListener('click', () => { scale = Math.max(scale - 0.2, 0.2); updateTransform(); });
+        document.getElementById('btn-reset').addEventListener('click', () => { scale = 0.6; panX = 0; panY = 0; updateTransform(); });
 
         // --- TREE TOOLTIP ---
-        function showTooltip(e, isTouch = false) {
+        function showTooltip(e) {
             if (isDragging) return;
-            const target = e.currentTarget || e.target.closest('.leaf');
-            if(!target) return;
-            
+            const target = e.currentTarget;
             el.ttName.innerText = target.dataset.name;
             el.ttId.innerText = target.dataset.id;
             el.ttSpouse.innerText = target.dataset.spouse;
             el.ttBranch.innerText = target.dataset.branch;
             
-            el.tt.style.opacity = '1';
-            
-            const updatePosition = (clientX, clientY) => {
-                el.tt.style.left = clientX + 'px';
-                el.tt.style.top = (clientY - 20) + 'px';
-            };
-
-            if (isTouch) {
-                updatePosition(e.clientX, e.clientY);
+            if(AppState.isAdmin) {
+                el.ttEditBtn.classList.remove('hidden');
+                el.ttEditBtn.onclick = () => {
+                    hideTooltip(e);
+                    switchTab('admin');
+                    document.getElementById('admin-tree-select').value = target.dataset.uid;
+                    loadSelectedNodeData();
+                };
             } else {
-                const moveTooltip = (mouseEvent) => { updatePosition(mouseEvent.clientX, mouseEvent.clientY); };
-                updatePosition(e.clientX, e.clientY);
-                target.addEventListener('mousemove', moveTooltip);
-                target._moveTooltip = moveTooltip;
+                el.ttEditBtn.classList.add('hidden');
             }
+            
+            el.tt.style.opacity = '1';
+            const moveTooltip = (mouseEvent) => {
+                el.tt.style.left = mouseEvent.clientX + 'px';
+                el.tt.style.top = (mouseEvent.clientY - 20) + 'px';
+            };
+            moveTooltip(e);
+            target.addEventListener('mousemove', moveTooltip);
+            target._moveTooltip = moveTooltip;
         }
 
         function hideTooltip(e) {
             el.tt.style.opacity = '0';
-            if(e.currentTarget && e.currentTarget._moveTooltip) e.currentTarget.removeEventListener('mousemove', e.currentTarget._moveTooltip);
+            if(e.currentTarget._moveTooltip) e.currentTarget.removeEventListener('mousemove', e.currentTarget._moveTooltip);
         }
 
         // --- BACKGROUND PARTICLES ---
@@ -994,8 +958,7 @@
             resizeCanvas();
             window.addEventListener('resize', resizeCanvas);
             if(particles.length === 0) {
-                const count = window.innerWidth < 768 ? 50 : 150; // less particles on mobile for perf
-                for (let i = 0; i < count; i++) particles.push(new Particle());
+                for (let i = 0; i < 150; i++) particles.push(new Particle());
             }
             animateParticles();
         }
@@ -1048,14 +1011,53 @@
             const uid = document.getElementById('admin-tree-select').value;
             if(!uid) return;
             const node = findNodeById(familyData, uid);
+            if(!node) return;
             
             document.getElementById('admin-node-name').value = node.name || '';
             document.getElementById('admin-node-spouse').value = node.spouse || '';
-            document.getElementById('admin-node-photo').value = node.photo || '';
+            
+            document.getElementById('admin-node-photo-base64').value = node.photo || '';
+            const preview = document.getElementById('admin-photo-preview');
+            if(node.photo && node.photo.length > 10) {
+                preview.innerHTML = `<img src="${node.photo}" class="w-full h-full object-cover">`;
+            } else {
+                preview.innerHTML = `<i class="fa-solid fa-user text-gray-500"></i>`;
+            }
+            document.getElementById('admin-node-photo-file').value = '';
             
             const radios = document.getElementsByName('admin-node-status');
             for(let r of radios) if(r.value === node.status) r.checked = true;
         }
+
+        // Handle Image Resizing on Admin Panel
+        document.getElementById('admin-node-photo-file').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if(!file) return;
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                const img = new Image();
+                img.onload = function() {
+                    const canvas = document.createElement('canvas');
+                    const size = 150; // High quality 150x150 avatar crop
+                    canvas.width = size;
+                    canvas.height = size;
+                    const ctx = canvas.getContext('2d');
+                    
+                    // crop to center
+                    const scale = Math.max(size / img.width, size / img.height);
+                    const x = (size / scale - img.width) / 2;
+                    const y = (size / scale - img.height) / 2;
+                    
+                    ctx.drawImage(img, x, y, img.width * scale, img.height * scale);
+                    const base64 = canvas.toDataURL('image/jpeg', 0.85);
+                    
+                    document.getElementById('admin-node-photo-base64').value = base64;
+                    document.getElementById('admin-photo-preview').innerHTML = `<img src="${base64}" class="w-full h-full object-cover">`;
+                }
+                img.src = event.target.result;
+            }
+            reader.readAsDataURL(file);
+        });
 
         function saveNodeData() {
             const uid = document.getElementById('admin-tree-select').value;
@@ -1064,7 +1066,7 @@
 
             node.name = document.getElementById('admin-node-name').value.trim();
             node.spouse = document.getElementById('admin-node-spouse').value.trim();
-            node.photo = document.getElementById('admin-node-photo').value.trim();
+            node.photo = document.getElementById('admin-node-photo-base64').value.trim();
             
             const radios = document.getElementsByName('admin-node-status');
             for(let r of radios) if(r.checked) node.status = r.value;
@@ -1073,9 +1075,34 @@
             showToast('Member Updated', `${node.name}'s details saved to the family tree.`);
         }
 
+        function deleteSelectedNode() {
+            const uid = document.getElementById('admin-tree-select').value;
+            const node = findNodeById(familyData, uid);
+            if(!node) return;
+            
+            if(!confirm(`Are you sure you want to delete ${node.name} and ALL of their descendants from the tree? This cannot be undone.`)) return;
+
+            // Recursive delete
+            const removeNode = (nodesList) => {
+                for(let i=0; i<nodesList.length; i++) {
+                    if(nodesList[i].uid === uid) {
+                        nodesList.splice(i, 1);
+                        return true;
+                    }
+                    if(nodesList[i].children && removeNode(nodesList[i].children)) return true;
+                }
+                return false;
+            };
+
+            removeNode(familyData);
+            refreshTreeUI();
+            showToast('Member Deleted', `${node.name} has been removed from the family tree.`);
+        }
+
         function addChildToSelected() {
             const parentUid = document.getElementById('admin-tree-select').value;
             const parent = findNodeById(familyData, parentUid);
+            if(!parent) return;
             
             const childName = document.getElementById('admin-new-child-name').value.trim();
             const childBranch = document.getElementById('admin-new-child-branch').value.trim();
@@ -1108,6 +1135,40 @@
             showToast('Child Added', `${childName} has been added as a child of ${parent.name}.`);
         }
 
+        function importFamilyJSON() {
+            const parentUid = document.getElementById('admin-tree-select').value;
+            const parent = findNodeById(familyData, parentUid);
+            const jsonText = document.getElementById('admin-bulk-json').value.trim();
+            
+            if(!parent) { showToast('Error', 'Please select a parent from the dropdown first.'); return; }
+            if(!jsonText) { showToast('Error', 'Please paste the JSON data.'); return; }
+            
+            try {
+                const importedData = JSON.parse(jsonText);
+                if(!Array.isArray(importedData)) throw new Error("JSON must be a list (Array) of objects.");
+                
+                if(!parent.children) parent.children = [];
+                
+                importedData.forEach(child => {
+                    child.uid = 'u_' + uidCounter++;
+                    if(!child.status) child.status = "alive";
+                    if(!child.photo) child.photo = "";
+                    if(!child.branch) child.branch = parent.branch || "";
+                    if(!child.children) child.children = [];
+                    parent.children.push(child);
+                });
+                
+                assignUids(familyData); // Secondary safety check
+                refreshTreeUI();
+                document.getElementById('admin-bulk-json').value = '';
+                showToast('Bulk Import Successful', `Added ${importedData.length} new members under ${parent.name}.`);
+                
+            } catch(e) {
+                console.error(e);
+                showToast('Invalid JSON Format', 'Please make sure you are pasting a valid JSON array. Error: ' + e.message);
+            }
+        }
+
         // --- GOOGLE MEET LOGIC ---
         function setupMeetingUI() {
             const btnText = document.getElementById('meet-btn-text');
@@ -1119,7 +1180,6 @@
         }
 
         emailjs.init("bq_8u9ZF8FZjOgB5M");
-
         const EMAILJS_SERVICE_ID = "service_o9cvhce";
         const EMAILJS_TEMPLATE_ID = "template_2oiwr79";
 
@@ -1218,7 +1278,7 @@
                     showCustomModal(
                         "Meeting Not Started", 
                         `The admin has not started the family meeting yet. Once they do, you will receive an email at ${AppState.userEmail} with the link to join.`,
-                        `<button onclick="closeModal()" class="w-full bg-gold-500 text-black font-bold py-3 rounded-lg hover:bg-gold-400">OK</button>`
+                        `<button onclick="closeModal()" class="w-full bg-gold-500 text-black font-bold py-2 rounded hover:bg-gold-400">OK</button>`
                     );
                 }
             }
@@ -1227,7 +1287,6 @@
         async function testEmailJS() {
             try {
                 showToast('Testing...', 'Sending test email to your address...', null);
-                
                 const testResult = await emailjs.send(
                     EMAILJS_SERVICE_ID,
                     EMAILJS_TEMPLATE_ID,
@@ -1241,15 +1300,13 @@
                 );
                 
                 if (testResult.status === 200) {
-                    console.log("✅ Test successful:", testResult);
                     showToast("✅ Test Email Sent!", `Check ${AppState.userEmail} inbox (and spam folder).`, null);
                 } else {
                     showToast("⚠️ Test Issue", "Email sent but status: " + testResult.status, null);
                 }
                 return true;
             } catch (error) {
-                console.error("❌ Test failed:", error);
-                showToast("❌ Error", "Check console. Make sure template has {{to_name}}, {{to_email}}, {{admin_name}}, {{meet_link}}, {{meeting_time}}", null);
+                showToast("❌ Error", "Check console. Make sure template has required variables.", null);
                 return false;
             }
         }
@@ -1332,8 +1389,8 @@
                     
                     const actionsHtml = `
                         <div class="flex space-x-2 mt-2">
-                            <button onclick="closeModal()" class="flex-1 border border-gray-600 text-gray-300 font-bold py-3 md:py-2 rounded-lg hover:bg-gray-800">Dismiss</button>
-                            <button onclick="closeModal(); switchTab('meet'); handleMeetAction();" class="flex-1 bg-google-blue text-white font-bold py-3 md:py-2 rounded-lg hover:bg-blue-600 flex justify-center items-center"><i class="fa-solid fa-video mr-2"></i> Start</button>
+                            <button onclick="closeModal()" class="flex-1 border border-gray-600 text-gray-300 font-bold py-2 rounded hover:bg-gray-800">Dismiss</button>
+                            <button onclick="closeModal(); switchTab('meet'); handleMeetAction();" class="flex-1 bg-google-blue text-white font-bold py-2 rounded hover:bg-blue-600 flex justify-center items-center"><i class="fa-solid fa-video mr-2"></i> Start Meeting</button>
                         </div>
                     `;
                     showCustomModal("Meeting Reminder", `It's time to start the scheduled meeting: "${meeting.title}". The family is waiting for your link.`, actionsHtml);
@@ -1344,15 +1401,14 @@
         // --- CORE UI FLOW ---
         function showToast(title, message, actionHtml = '') {
             const toast = document.createElement('div');
-            toast.className = 'bg-[#111] border border-gold-600 p-4 rounded-xl shadow-[0_0_20px_rgba(212,175,55,0.3)] w-full pointer-events-auto flex flex-col z-50';
-            toast.style.animation = 'slideInRight 0.3s ease-out forwards';
+            toast.className = 'bg-[#111] border border-gold-600 p-4 rounded-xl shadow-[0_0_20px_rgba(212,175,55,0.3)] w-80 toast-enter pointer-events-auto flex flex-col z-50';
             toast.innerHTML = `
                 <div class="flex justify-between items-start mb-2">
                     <h4 class="text-gold-500 font-bold text-sm flex items-center"><i class="fa-solid fa-bell mr-2 animate-pulse"></i>${title}</h4>
-                    <button onclick="this.parentElement.parentElement.remove()" class="text-gray-400 hover:text-white p-1 w-8 h-8 flex items-center justify-center"><i class="fa-solid fa-times"></i></button>
+                    <button onclick="this.parentElement.parentElement.remove()" class="text-gray-400 hover:text-white"><i class="fa-solid fa-times"></i></button>
                 </div>
-                <p class="text-white text-xs mb-3 leading-relaxed">${message}</p>
-                ${actionHtml}
+                <p class="text-white text-xs mb-3">${message}</p>
+                ${actionHtml || ''}
             `;
             el.toastContainer.appendChild(toast);
             if(!actionHtml) setTimeout(() => { if(toast.parentElement) toast.remove(); }, 6000);
@@ -1360,7 +1416,7 @@
 
         function showCustomModal(title, msg, customActions = null) {
             el.modalTitle.innerText = title; el.modalMsg.innerText = msg;
-            el.modalActions.innerHTML = customActions || `<button onclick="closeModal()" class="w-full bg-gold-500 text-black font-bold py-3 md:py-2 rounded-lg hover:bg-gold-400">OK</button>`;
+            el.modalActions.innerHTML = customActions || `<button onclick="closeModal()" class="w-full bg-gold-500 text-black font-bold py-2 rounded hover:bg-gold-400">OK</button>`;
             el.modal.classList.remove('hidden'); el.modal.classList.add('flex');
         }
 
@@ -1404,9 +1460,7 @@
             if (email !== '' && email.includes('@') && pass !== '') {
                 AppState.userEmail = email;
                 document.getElementById('user-role-display').textContent = AppState.isAdmin ? 'Admin' : 'Member';
-                document.getElementById('mobile-user-role').textContent = AppState.isAdmin ? 'Admin' : 'Member';
                 document.getElementById('user-name-display').textContent = AppState.userName;
-                document.getElementById('mobile-user-name').textContent = AppState.userName;
                 document.getElementById('user-email-display').textContent = AppState.userEmail;
                 
                 if (AppState.isAdmin) {
@@ -1419,7 +1473,6 @@
                 setTimeout(() => {
                     el.gmailLogin.classList.add('d-none'); el.app.classList.remove('d-none'); el.app.classList.add('fade-in');
                     switchTab('chat');
-                    selectGroup('group1'); // Automatically load saved messages for the default group
                     showToast('Connection Successful', `Logged in as ${AppState.userEmail}.`);
                 }, 500);
             } else {
@@ -1429,7 +1482,6 @@
         }
 
         function logout() {
-            document.getElementById('mobile-profile-menu').classList.add('hidden'); // Close mobile menu if open
             el.app.classList.remove('fade-in'); el.app.classList.add('fade-out');
             setTimeout(() => {
                 el.app.classList.add('d-none'); el.login.classList.remove('fade-out', 'd-none'); el.login.classList.add('fade-in');
@@ -1440,8 +1492,7 @@
         function switchTab(tabId) {
             AppState.currentView = tabId;
             document.querySelectorAll('.nav-btn').forEach(btn => {
-                btn.classList.remove('bg-gray-800', 'text-gold-500', 'border-gold-500'); 
-                btn.classList.add('text-gray-400', 'border-transparent');
+                btn.classList.remove('bg-gray-800', 'text-gold-500', 'border-gold-500'); btn.classList.add('text-gray-400', 'border-transparent');
             });
             const activeBtn = document.getElementById(`nav-${tabId}`);
             activeBtn.classList.remove('text-gray-400', 'border-transparent');
@@ -1452,8 +1503,6 @@
             document.getElementById('view-tree').classList.add('d-none');
             document.getElementById('view-admin').classList.add('d-none');
             document.getElementById(`view-${tabId}`).classList.remove('d-none');
-            
-            hideMobileChat(); // Reset chat view state when switching tabs
 
             if(tabId === 'meet') setupMeetingUI();
             if(tabId === 'tree') {
@@ -1466,7 +1515,7 @@
 
         setInterval(() => { const timeEl = document.getElementById('current-time-display'); if (timeEl) timeEl.innerText = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}); }, 1000);
 
-        // --- Chat Functions (Files, Audio, Text) ---
+        // --- Chat Functions ---
         function selectGroup(groupId, nameOverride = null, isPrivate = false) {
             AppState.activeGroup = groupId;
             document.querySelectorAll('.group-btn').forEach(btn => { btn.classList.remove('bg-gray-800', 'border-gray-700'); btn.classList.add('border-transparent'); });
@@ -1479,82 +1528,9 @@
             document.getElementById('chat-header-avatar').textContent = finalTitle.substring(0, 2).toUpperCase();
 
             el.chatMessages.innerHTML = isPrivate 
-                ? `<div class="flex justify-center my-4"><span class="bg-[#182229] text-[#ffd279] text-xs px-3 py-2 rounded-lg text-center max-w-[95%] md:max-w-[85%] shadow-sm border border-gold-600/30 leading-relaxed"><i class="fa-solid fa-lock mr-1"></i> Messages with ${finalTitle} are end-to-end encrypted.</span></div>`
-                : `<div class="flex justify-center my-4"><span class="bg-gray-800 text-gray-400 text-xs px-3 py-1 rounded-full"><i class="fa-solid fa-lock text-[10px] mr-1"></i> Switched to ${finalTitle} (E2EE)</span></div>`;
-            
-            // Load and decrypt messages for this group
-            loadAndRenderGroupMessages();
+                ? `<div class="flex justify-center my-4"><span class="bg-[#182229] text-[#ffd279] text-xs px-3 py-2 rounded-lg text-center max-w-[85%] shadow-sm border border-gold-600/30"><i class="fa-solid fa-lock mr-1"></i> Messages with ${finalTitle} are encrypted.</span></div>`
+                : `<div class="flex justify-center my-4"><span class="bg-gray-800 text-gray-400 text-xs px-3 py-1 rounded-full">Switched to ${finalTitle}</span></div>`;
         }
-
-        // --- E2EE (END-TO-END ENCRYPTION) & STORAGE SETUP ---
-        // Generates a unique key boundary per chat group ensuring isolation
-        const getGroupSecretKey = () => "3m-hub-secure-key-" + AppState.activeGroup;
-
-        function encryptData(data) {
-            return CryptoJS.AES.encrypt(data, getGroupSecretKey()).toString();
-        }
-
-        function decryptData(ciphertext) {
-            try {
-                const bytes = CryptoJS.AES.decrypt(ciphertext, getGroupSecretKey());
-                const originalData = bytes.toString(CryptoJS.enc.Utf8);
-                return originalData || null;
-            } catch (e) {
-                return null;
-            }
-        }
-
-        function saveMessageToStorage(msgObj) {
-            const key = '3m_chat_' + AppState.activeGroup;
-            const history = JSON.parse(localStorage.getItem(key) || '[]');
-            history.push(msgObj);
-            localStorage.setItem(key, JSON.stringify(history));
-        }
-
-        function loadMessagesFromStorage() {
-            const key = '3m_chat_' + AppState.activeGroup;
-            return JSON.parse(localStorage.getItem(key) || '[]');
-        }
-
-        function renderTextMessage(text, time, isHistory = false) {
-            const msgHtml = `
-                <div class="flex justify-end fade-in mt-1">
-                    <div class="msg-bubble-sent p-2 px-3 max-w-[85%] md:max-w-[75%] shadow-sm relative">
-                        <p class="text-[15px] leading-relaxed text-black break-words">${text}</p>
-                        <div class="flex justify-end items-center mt-1 -mb-1 space-x-1">
-                            <i class="fa-solid fa-lock text-[8px] text-black/50" title="End-to-End Encrypted"></i>
-                            <span class="text-[10px] text-black/70">${time}</span>
-                            <i class="fa-solid fa-check-double text-[10px] text-blue-600"></i>
-                        </div>
-                    </div>
-                </div>`;
-            el.chatMessages.insertAdjacentHTML('beforeend', msgHtml);
-            if(!isHistory) el.chatMessages.scrollTop = el.chatMessages.scrollHeight;
-        }
-
-        function loadAndRenderGroupMessages() {
-            const msgs = loadMessagesFromStorage();
-            msgs.forEach(msg => {
-                if(msg.type === 'text') {
-                    const decryptedText = decryptData(msg.content);
-                    renderTextMessage(decryptedText || "🔒 [Encrypted message - Key invalid or changed]", msg.time, true);
-                } else if(msg.type === 'audio') {
-                    const decryptedB64 = decryptData(msg.content);
-                    if(decryptedB64) {
-                        appendRealAudioMessage(decryptedB64, msg.duration, msg.time, true);
-                    } else {
-                        renderTextMessage("🔒 [Encrypted Voice Note - Key invalid]", msg.time, true);
-                    }
-                }
-            });
-            setTimeout(() => el.chatMessages.scrollTop = el.chatMessages.scrollHeight, 50);
-        }
-
-        const blobToBase64 = (blob) => new Promise((resolve) => {
-            const reader = new FileReader();
-            reader.onloadend = () => resolve(reader.result);
-            reader.readAsDataURL(blob);
-        });
 
         el.msgInput.addEventListener('input', function() {
             if(this.value.trim().length > 0) { el.btnMic.classList.add('hidden'); el.btnSend.classList.remove('hidden'); } 
@@ -1565,15 +1541,8 @@
         function sendMessage() {
             const text = el.msgInput.value.trim(); if(!text) return;
             const time = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-            
-            // Encrypt and save to localStorage
-            const encryptedText = encryptData(text);
-            saveMessageToStorage({ type: 'text', content: encryptedText, time: time });
-            
-            // Render locally
-            renderTextMessage(text, time);
-            
-            el.msgInput.value = ''; el.btnSend.classList.add('hidden'); el.btnMic.classList.remove('hidden');
+            el.chatMessages.insertAdjacentHTML('beforeend', `<div class="flex justify-end fade-in mt-1"><div class="msg-bubble-sent p-2 px-3 max-w-[75%] shadow-sm relative"><p class="text-[14.5px] leading-relaxed text-black">${text}</p><div class="flex justify-end items-center mt-1 -mb-1 space-x-1"><span class="text-[10px] text-black/70">${time}</span><i class="fa-solid fa-check text-[10px] text-gray-700"></i></div></div></div>`);
+            el.msgInput.value = ''; el.btnSend.classList.add('hidden'); el.btnMic.classList.remove('hidden'); el.chatMessages.scrollTop = el.chatMessages.scrollHeight;
         }
 
         function handleFileUpload(event) {
@@ -1588,8 +1557,8 @@
                         const imgSrc = e.target.result;
                         const msgHtml = `
                             <div class="flex justify-end fade-in mt-1">
-                                <div class="msg-bubble-sent p-1 max-w-[85%] md:max-w-[75%] shadow-sm relative rounded-lg">
-                                    <img src="${imgSrc}" class="w-full max-w-xs max-h-64 rounded-lg object-cover cursor-pointer hover:opacity-90 transition-opacity" onclick="window.open('${imgSrc}')" alt="Shared Image">
+                                <div class="msg-bubble-sent p-1 max-w-[75%] shadow-sm relative rounded-lg">
+                                    <img src="${imgSrc}" class="max-w-xs max-h-64 rounded-lg object-cover cursor-pointer hover:opacity-90 transition-opacity" onclick="window.open('${imgSrc}')" alt="Shared Image">
                                     <div class="flex justify-end items-center mt-1 mb-1 mr-1 space-x-1 absolute bottom-1 right-2 bg-black/50 px-1.5 py-0.5 rounded-full backdrop-blur-sm">
                                         <span class="text-[10px] text-white">${time}</span>
                                         <i class="fa-solid fa-check text-[10px] text-white"></i>
@@ -1605,7 +1574,7 @@
                     const sizeKB = (file.size / 1024).toFixed(1) + ' KB';
                     const msgHtml = `
                         <div class="flex justify-end fade-in mt-1">
-                            <div class="msg-bubble-sent p-2 px-3 shadow-sm relative flex items-center space-x-3 max-w-[90%] md:max-w-[280px]">
+                            <div class="msg-bubble-sent p-2 px-3 shadow-sm relative flex items-center space-x-3 w-[250px] sm:w-[280px]">
                                 <div class="w-10 h-10 rounded bg-black/10 flex items-center justify-center shrink-0">
                                     <i class="fa-solid fa-file-lines text-2xl text-black/70"></i>
                                 </div>
@@ -1627,7 +1596,6 @@
             event.target.value = ''; 
         }
 
-        // Voice Recording Setup
         let mediaRecorder;
         let audioChunks = [];
         let currentPlayingAudioId = null;
@@ -1643,7 +1611,7 @@
         }
 
         async function startRecording(e) {
-            if (e && e.type !== 'mousedown') e.preventDefault(); 
+            if (e) e.preventDefault(); 
             if (AppState.isRecording || el.msgInput.value.trim().length > 0) return;
             
             try {
@@ -1653,23 +1621,11 @@
 
                 mediaRecorder.ondataavailable = event => { if (event.data.size > 0) audioChunks.push(event.data); };
 
-                mediaRecorder.onstop = async () => {
+                mediaRecorder.onstop = () => {
                     const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
                     if (AppState.recordSeconds >= 1) {
-                        const time = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-                        
-                        // 1. Convert audio blob to Base64
-                        const base64Audio = await blobToBase64(audioBlob);
-                        
-                        // 2. Encrypt the Base64 audio string
-                        const encryptedAudio = encryptData(base64Audio);
-                        
-                        // 3. Save to localStorage
-                        saveMessageToStorage({ type: 'audio', content: encryptedAudio, duration: AppState.recordSeconds, time: time });
-
-                        // 4. Render visually
                         const audioUrl = URL.createObjectURL(audioBlob);
-                        appendRealAudioMessage(audioUrl, AppState.recordSeconds, time);
+                        appendRealAudioMessage(audioUrl, AppState.recordSeconds);
                     }
                     stream.getTracks().forEach(track => track.stop());
                 };
@@ -1691,7 +1647,7 @@
         }
 
         function stopRecording(e) {
-            if (e && e.type !== 'mouseup' && e.type !== 'mouseleave') e.preventDefault();
+            if (e) e.preventDefault();
             if(!AppState.isRecording || !mediaRecorder) return;
             mediaRecorder.stop();
             AppState.isRecording = false;
@@ -1701,26 +1657,25 @@
             el.msgInput.classList.remove('hidden');
         }
 
-        function appendRealAudioMessage(audioUrl, durationSeconds, timeStr = null, isHistory = false) {
-            const time = timeStr || new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-            const msgId = 'audio-' + Date.now() + Math.floor(Math.random() * 1000); // Random offset avoids ID collisions on mass load
+        function appendRealAudioMessage(audioUrl, durationSeconds) {
+            const time = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+            const msgId = 'audio-' + Date.now();
             
             const msgHtml = `
                 <div class="flex justify-end fade-in mt-1">
-                    <div class="msg-bubble-sent p-2 px-3 shadow-sm relative flex items-center space-x-3 w-[85%] md:w-[280px]">
-                        <button onclick="playAudio('${msgId}')" id="play-btn-${msgId}" class="w-10 h-10 rounded-full bg-black/10 flex items-center justify-center cursor-pointer hover:bg-black/20 transition-colors shrink-0 outline-none min-w-[40px] min-h-[40px]">
+                    <div class="msg-bubble-sent p-2 px-3 shadow-sm relative flex items-center space-x-3 w-[250px] sm:w-[280px]">
+                        <button onclick="playAudio('${msgId}')" id="play-btn-${msgId}" class="w-10 h-10 rounded-full bg-black/10 flex items-center justify-center cursor-pointer hover:bg-black/20 transition-colors shrink-0 outline-none">
                             <i class="fa-solid fa-play text-black ml-1 text-sm" id="play-icon-${msgId}"></i>
                         </button>
                         <div class="flex-1 flex flex-col w-full">
-                            <div class="h-2 bg-black/20 rounded-full relative overflow-hidden mb-1 cursor-pointer" onclick="seekAudio(event, '${msgId}')" id="progress-container-${msgId}">
-                                <div class="absolute left-0 top-0 h-full bg-black w-0 transition-all duration-100 ease-linear" id="progress-bar-${msgId}"></div>
+                            <div class="h-1.5 bg-black/20 rounded-full relative overflow-hidden mb-1 cursor-pointer" onclick="seekAudio(event, '${msgId}')" id="progress-container-${msgId}">
+                                <div class="absolute left-0 top-0 h-full bg-black w-0" id="progress-bar-${msgId}"></div>
                             </div>
                             <div class="flex justify-between items-center w-full">
                                 <span class="text-[10px] font-mono text-black/80" id="time-display-${msgId}" data-duration="${durationSeconds}">${formatAudioTime(durationSeconds)}</span>
                                 <div class="flex items-center space-x-1">
-                                    <i class="fa-solid fa-lock text-[8px] text-black/50" title="End-to-End Encrypted"></i>
                                     <span class="text-[10px] text-black/70">${time}</span>
-                                    <i class="fa-solid fa-check-double text-[10px] text-blue-600"></i>
+                                    <i class="fa-solid fa-check text-[10px] text-gray-700"></i>
                                 </div>
                             </div>
                         </div>
@@ -1729,7 +1684,7 @@
                 </div>
             `;
             el.chatMessages.insertAdjacentHTML('beforeend', msgHtml);
-            if(!isHistory) el.chatMessages.scrollTop = el.chatMessages.scrollHeight;
+            el.chatMessages.scrollTop = el.chatMessages.scrollHeight;
         }
 
         function playAudio(id) {
@@ -1741,10 +1696,8 @@
                 if(prevAudio) {
                     prevAudio.pause();
                     const prevIcon = document.getElementById(`play-icon-${currentPlayingAudioId}`);
-                    if(prevIcon) {
-                        prevIcon.classList.replace('fa-pause', 'fa-play');
-                        prevIcon.classList.add('ml-1');
-                    }
+                    prevIcon.classList.replace('fa-pause', 'fa-play');
+                    prevIcon.classList.add('ml-1');
                 }
             }
 
@@ -1795,13 +1748,7 @@
             const timeDisplay = document.getElementById(`time-display-${id}`);
             const rect = container.getBoundingClientRect();
             
-            let clickX;
-            if (event.touches) {
-                clickX = event.touches[0].clientX - rect.left;
-            } else {
-                clickX = event.clientX - rect.left;
-            }
-            
+            let clickX = event.clientX - rect.left;
             clickX = Math.max(0, Math.min(clickX, rect.width)); 
             const percent = clickX / rect.width;
             
